@@ -40,7 +40,7 @@ can be absolute. Do not remove the cache while the installation is in use.
 ## Generate the smoke dataset
 
 ```bash
-./installation/run_python.sh scripts/render_smoke.py --output artifacts/smoke
+./installation/run_python.sh scripts/render_smoke.py --output vis/smoke
 ```
 
 This generates four overlapping calibrated views, each containing:
@@ -54,10 +54,12 @@ After installing the development environment below, generate a portable HTML
 report with an interactive structural graph, camera poses, and image comparisons:
 
 ```bash
-.venv/bin/python scripts/make_report.py artifacts/smoke
+.venv/bin/python scripts/make_report.py vis/smoke
 ```
 
-Open `artifacts/smoke/report.html` directly in a browser; it needs no server or CDN.
+Open `vis/smoke/report.html` directly in a browser; it needs no server or CDN.
+The `vis/` folder stays local and is excluded from Git. It contains the contact
+sheet, per-view images, annotations, and the interactive report.
 
 The output also includes the USD scene and a contact sheet. An independent
 ray/box calculation validates rendered depth at sparse pixel centers. The smoke

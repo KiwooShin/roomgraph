@@ -9,7 +9,7 @@ from pathlib import Path
 def main():
     """Create one room, capture four views, and verify rendered metric depth."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=Path("artifacts/smoke"))
+    parser.add_argument("--output", type=Path, default=Path("vis/smoke"))
     parser.add_argument("--width", type=int, default=640)
     parser.add_argument("--height", type=int, default=480)
     args = parser.parse_args()

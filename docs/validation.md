@@ -40,7 +40,7 @@ visually inspected and the structural overlays align with the rendered interior.
 - Self-contained HTML report includes orbitable structure/camera visualization;
   its rendered layout and graph were inspected in headless Chromium.
 
-Local outputs: `artifacts/smoke/report.html`, `contact_sheet.jpg`, `manifest.json`,
+Local outputs: `vis/smoke/report.html`, `contact_sheet.jpg`, `manifest.json`,
 `room.usda`, and per-view files. Outputs are ignored by Git and regenerable.
 
 ## Remaining work

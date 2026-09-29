@@ -1,0 +1,830 @@
+{
+  "schema_version": 1,
+  "kind": "connected_building",
+  "name": "open_office",
+  "title": "Open office with meeting room, break room and quiet office",
+  "units": "metres",
+  "up_axis": "Z",
+  "seed": 337,
+  "bounds_xy": [
+    [
+      -5,
+      -4.5
+    ],
+    [
+      5,
+      4.5
+    ]
+  ],
+  "height_m": 3,
+  "wall_thickness_m": 0.16,
+  "start": {
+    "position": [
+      -0.7,
+      -1.7,
+      0
+    ],
+    "yaw_deg": 0
+  },
+  "regions": [
+    {
+      "id": "open_office",
+      "kind": "room",
+      "bounds_xy": [
+        [
+          -5,
+          -4.5
+        ],
+        [
+          1,
+          4.5
+        ]
+      ],
+      "furnishings": [
+        {
+          "recipe": "workstation",
+          "parameters": {
+            "name": "desk_0",
+            "xy": [
+              -3.6,
+              3.85
+            ],
+            "yaw": 0
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_0",
+            "xy": [
+              -3.6,
+              2.95
+            ],
+            "yaw": 0,
+            "material": "teal"
+          }
+        },
+        {
+          "recipe": "workstation",
+          "parameters": {
+            "name": "desk_1",
+            "xy": [
+              -1.5,
+              3.85
+            ],
+            "yaw": 0
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_1",
+            "xy": [
+              -1.5,
+              2.95
+            ],
+            "yaw": 0,
+            "material": "navy"
+          }
+        },
+        {
+          "recipe": "workstation",
+          "parameters": {
+            "name": "desk_2",
+            "xy": [
+              -3.6,
+              -3.85
+            ],
+            "yaw": 180
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_2",
+            "xy": [
+              -3.6,
+              -2.95
+            ],
+            "yaw": 180,
+            "material": "rust"
+          }
+        },
+        {
+          "recipe": "workstation",
+          "parameters": {
+            "name": "desk_3",
+            "xy": [
+              -1.5,
+              -3.85
+            ],
+            "yaw": 180
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_3",
+            "xy": [
+              -1.5,
+              -2.95
+            ],
+            "yaw": 180,
+            "material": "sage"
+          }
+        },
+        {
+          "recipe": "bookshelf",
+          "parameters": {
+            "name": "library",
+            "xy": [
+              -4.62,
+              0.8
+            ],
+            "yaw": 90
+          }
+        },
+        {
+          "recipe": "bookshelf",
+          "parameters": {
+            "name": "archive",
+            "xy": [
+              -4.62,
+              -1.0
+            ],
+            "yaw": 90
+          }
+        },
+        {
+          "recipe": "table",
+          "parameters": {
+            "name": "team_table",
+            "xy": [
+              -2.8,
+              0.2
+            ],
+            "size": [
+              1.5,
+              0.8,
+              0.75
+            ],
+            "material": "white"
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "team_chair",
+            "xy": [
+              -2.8,
+              -0.65
+            ],
+            "material": "mustard"
+          }
+        },
+        {
+          "recipe": "plant",
+          "parameters": {
+            "name": "north_plant",
+            "xyz": [
+              0.35,
+              3.85,
+              0
+            ],
+            "scale": 0.72
+          }
+        },
+        {
+          "recipe": "plant",
+          "parameters": {
+            "name": "south_plant",
+            "xyz": [
+              0.35,
+              -3.85,
+              0
+            ],
+            "scale": 0.72
+          }
+        },
+        {
+          "recipe": "artwork",
+          "parameters": {
+            "name": "west_art",
+            "xy": [
+              -4.9,
+              2.65
+            ],
+            "yaw": 90
+          }
+        },
+        {
+          "recipe": "rug",
+          "parameters": {
+            "name": "rug",
+            "xy": [
+              -1,
+              0.2
+            ],
+            "size": [
+              2.5,
+              3.7
+            ],
+            "material": "navy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "meeting",
+      "kind": "room",
+      "bounds_xy": [
+        [
+          1,
+          1.5
+        ],
+        [
+          5,
+          4.5
+        ]
+      ],
+      "furnishings": [
+        {
+          "recipe": "table",
+          "parameters": {
+            "name": "meeting_table",
+            "xy": [
+              3.55,
+              3.15
+            ],
+            "size": [
+              1.65,
+              0.75,
+              0.76
+            ],
+            "material": "walnut"
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_left",
+            "xy": [
+              3.05,
+              2.4
+            ],
+            "material": "sage"
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair_right",
+            "xy": [
+              4.0,
+              2.4
+            ],
+            "material": "sage"
+          }
+        },
+        {
+          "recipe": "plant",
+          "parameters": {
+            "name": "plant",
+            "xyz": [
+              1.65,
+              3.85,
+              0
+            ],
+            "scale": 0.65
+          }
+        },
+        {
+          "recipe": "artwork",
+          "parameters": {
+            "name": "art",
+            "xy": [
+              3.3,
+              4.4
+            ],
+            "yaw": 0
+          }
+        },
+        {
+          "recipe": "rug",
+          "parameters": {
+            "name": "rug",
+            "xy": [
+              3.3,
+              3.1
+            ],
+            "size": [
+              2.3,
+              1.7
+            ],
+            "material": "linen"
+          }
+        }
+      ]
+    },
+    {
+      "id": "break_room",
+      "kind": "room",
+      "bounds_xy": [
+        [
+          1,
+          -1.5
+        ],
+        [
+          5,
+          1.5
+        ]
+      ],
+      "furnishings": [
+        {
+          "recipe": "cabinet",
+          "parameters": {
+            "name": "prep_unit",
+            "xy": [
+              2.6799999999999997,
+              1.0
+            ],
+            "size": [
+              1.18,
+              0.6,
+              0.86
+            ],
+            "yaw": 0,
+            "material": "sage"
+          }
+        },
+        {
+          "recipe": "cabinet",
+          "parameters": {
+            "name": "sink_unit",
+            "xy": [
+              3.92,
+              1.0
+            ],
+            "size": [
+              1.18,
+              0.6,
+              0.86
+            ],
+            "yaw": 0,
+            "material": "sage"
+          }
+        },
+        {
+          "recipe": "object",
+          "parameters": {
+            "name": "countertop",
+            "category": "kitchen",
+            "origin": [
+              3.3,
+              1.0,
+              0.965
+            ]
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "worktop",
+            "center": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              2.5,
+              0.66,
+              0.07
+            ],
+            "material": "white"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "sink_rim",
+            "center": [
+              0.64,
+              0.04,
+              0.044
+            ],
+            "size": [
+              0.6,
+              0.43,
+              0.025
+            ],
+            "material": "steel"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "sink_basin",
+            "center": [
+              0.64,
+              0.04,
+              0.06
+            ],
+            "size": [
+              0.5,
+              0.33,
+              0.02
+            ],
+            "material": "black"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "faucet_post",
+            "center": [
+              0.64,
+              0.23,
+              0.19
+            ],
+            "size": [
+              0.028,
+              0.028,
+              0.28
+            ],
+            "material": "steel"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "faucet_spout",
+            "center": [
+              0.64,
+              0.145,
+              0.32
+            ],
+            "size": [
+              0.03,
+              0.19,
+              0.025
+            ],
+            "material": "steel"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "hob",
+            "center": [
+              -0.65,
+              0.02,
+              0.045
+            ],
+            "size": [
+              0.52,
+              0.43,
+              0.018
+            ],
+            "material": "black"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "burner_one",
+            "center": [
+              -0.79,
+              0.02,
+              0.06
+            ],
+            "size": [
+              0.16,
+              0.16,
+              0.01
+            ],
+            "material": "steel",
+            "shape": "cylinder"
+          }
+        },
+        {
+          "recipe": "add",
+          "parameters": {
+            "name": "burner_two",
+            "center": [
+              -0.51,
+              0.02,
+              0.06
+            ],
+            "size": [
+              0.16,
+              0.16,
+              0.01
+            ],
+            "material": "steel",
+            "shape": "cylinder"
+          }
+        },
+        {
+          "recipe": "mug",
+          "parameters": {
+            "name": "mug",
+            "xyz": [
+              3.32,
+              0.85,
+              1.01
+            ],
+            "material": "mustard"
+          }
+        },
+        {
+          "recipe": "cabinet",
+          "parameters": {
+            "name": "fridge",
+            "xy": [
+              4.5,
+              -0.85
+            ],
+            "size": [
+              0.64,
+              0.62,
+              1.9
+            ],
+            "yaw": 180,
+            "material": "steel"
+          }
+        },
+        {
+          "recipe": "table",
+          "parameters": {
+            "name": "bar",
+            "xy": [
+              2.75,
+              -1.08
+            ],
+            "size": [
+              1.35,
+              0.45,
+              0.88
+            ],
+            "material": "walnut"
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "bar_chair",
+            "xy": [
+              2.75,
+              -0.48
+            ],
+            "yaw": 180,
+            "material": "rust"
+          }
+        },
+        {
+          "recipe": "artwork",
+          "parameters": {
+            "name": "art",
+            "xy": [
+              1.1,
+              1
+            ],
+            "yaw": 90
+          }
+        }
+      ]
+    },
+    {
+      "id": "quiet_office",
+      "kind": "room",
+      "bounds_xy": [
+        [
+          1,
+          -4.5
+        ],
+        [
+          5,
+          -1.5
+        ]
+      ],
+      "furnishings": [
+        {
+          "recipe": "workstation",
+          "parameters": {
+            "name": "desk",
+            "xy": [
+              3.5,
+              -3.95
+            ],
+            "yaw": 180
+          }
+        },
+        {
+          "recipe": "chair",
+          "parameters": {
+            "name": "chair",
+            "xy": [
+              3.5,
+              -3.02
+            ],
+            "yaw": 180,
+            "material": "navy"
+          }
+        },
+        {
+          "recipe": "cabinet",
+          "parameters": {
+            "name": "cabinet",
+            "xy": [
+              4.62,
+              -2.25
+            ],
+            "size": [
+              1.0,
+              0.45,
+              0.8
+            ],
+            "yaw": -90,
+            "material": "white"
+          }
+        },
+        {
+          "recipe": "plant",
+          "parameters": {
+            "name": "plant",
+            "xyz": [
+              1.65,
+              -3.9,
+              0
+            ],
+            "scale": 0.67
+          }
+        },
+        {
+          "recipe": "artwork",
+          "parameters": {
+            "name": "art",
+            "xy": [
+              3.5,
+              -4.4
+            ],
+            "yaw": 180
+          }
+        },
+        {
+          "recipe": "rug",
+          "parameters": {
+            "name": "rug",
+            "xy": [
+              3,
+              -2.8
+            ],
+            "size": [
+              2.5,
+              1.7
+            ],
+            "material": "sage"
+          }
+        }
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "id": "west",
+      "start": [
+        -5,
+        -4.5
+      ],
+      "end": [
+        -5,
+        4.5
+      ]
+    },
+    {
+      "id": "east",
+      "start": [
+        5,
+        -4.5
+      ],
+      "end": [
+        5,
+        4.5
+      ]
+    },
+    {
+      "id": "south",
+      "start": [
+        -5,
+        -4.5
+      ],
+      "end": [
+        5,
+        -4.5
+      ]
+    },
+    {
+      "id": "north",
+      "start": [
+        -5,
+        4.5
+      ],
+      "end": [
+        5,
+        4.5
+      ]
+    },
+    {
+      "id": "side_rooms",
+      "start": [
+        1,
+        -4.5
+      ],
+      "end": [
+        1,
+        4.5
+      ]
+    },
+    {
+      "id": "meeting_break",
+      "start": [
+        1,
+        1.5
+      ],
+      "end": [
+        5,
+        1.5
+      ]
+    },
+    {
+      "id": "break_quiet",
+      "start": [
+        1,
+        -1.5
+      ],
+      "end": [
+        5,
+        -1.5
+      ]
+    }
+  ],
+  "portals": [
+    {
+      "id": "meeting_entry",
+      "wall": "side_rooms",
+      "offset_m": 7.5,
+      "width_m": 1.8,
+      "height_m": 2.25,
+      "connects": [
+        "open_office",
+        "meeting"
+      ]
+    },
+    {
+      "id": "break_entry",
+      "wall": "side_rooms",
+      "offset_m": 4.5,
+      "width_m": 1.8,
+      "height_m": 2.25,
+      "connects": [
+        "open_office",
+        "break_room"
+      ]
+    },
+    {
+      "id": "quiet_entry",
+      "wall": "side_rooms",
+      "offset_m": 1.5,
+      "width_m": 1.8,
+      "height_m": 2.25,
+      "connects": [
+        "open_office",
+        "quiet_office"
+      ]
+    }
+  ],
+  "headcam": {
+    "enabled": true,
+    "arm_reach_m": 0.52
+  },
+  "asset_overrides": {
+    "plants": "potted_plant_02",
+    "sofa": "sofa_03"
+  },
+  "lighting": {
+    "daylight_intensity": 500,
+    "ceiling_intensity": 1900,
+    "color_temperature_kelvin": 5000
+  },
+  "render": {
+    "width": 384,
+    "height": 256,
+    "samples_per_pixel": 16,
+    "mode": "PathTracing",
+    "focal_length_mm": 14
+  },
+  "dataset": {
+    "split": "development",
+    "family": "connected_space_suite_v1"
+  }
+}

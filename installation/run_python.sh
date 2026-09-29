@@ -3,7 +3,11 @@
 set -euo pipefail
 project_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 install_dir=${ROOMGRAPH_INSTALL_DIR:-${HOME}/.local/opt/indoor-structure}
-docker run --rm --gpus all --shm-size=4g \
+docker_args=()
+if [[ -n "${ROOMGRAPH_CONTAINER_CIDFILE:-}" ]]; then
+    docker_args+=(--cidfile "${ROOMGRAPH_CONTAINER_CIDFILE}")
+fi
+docker run "${docker_args[@]}" --rm --gpus all --shm-size=4g \
     -v "${install_dir}/IsaacSim-5.1.0:/isaac-sim" \
     -v "${install_dir}/container-home:/home/ubuntu" \
     -v "${project_dir}:/workspace" -w /workspace \

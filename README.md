@@ -1,9 +1,9 @@
 # RoomGraph
 
 Synthetic indoor imagery and geometry-derived structural-edge annotations for
-multi-view reconstruction. The first milestone is a calibrated Isaac Sim room
-capture on NVIDIA DGX Spark. A trained structural-edge baseline and calibrated rectangular-room reconstruction
-are now implemented; see the measured head-camera pilot below.
+multi-view reconstruction on NVIDIA DGX Spark. The project includes furnished
+Isaac Sim captures, a trained structural-edge baseline, calibrated room fitting,
+and sensor-assisted exploration of connected indoor spaces.
 
 ## Current scope
 
@@ -101,8 +101,9 @@ Furnished visibility uses rendered first-hit depth with a 2.5 cm tolerance.
 Masks distinguish visible, hidden, and full projected architectural edges;
 furniture edges and reflected structure in mirrors are excluded. This is a
 prototype annotation method with pixel/silhouette approximation, not yet a
-production dataset validation pipeline. These are four decorated versions of one
-room shell, not yet connected multi-room buildings or industrial environments.
+production dataset validation pipeline. This furnished dataset contains four
+decorated versions of one room shell. The connected-building experiments below
+use separate layouts and evaluation protocols.
 
 ## Development
 
@@ -122,8 +123,8 @@ Generated data, caches, logs, and virtual environments are excluded from Git.
 1. Validate native GPU rendering, camera conventions, and structural annotations.
 2. Parameterize empty layouts and capture trajectories; split data by building.
 3. Extend the trained edge-detection pilot to diverse layouts and corner prediction.
-4. Extend calibrated rectangular-shell fitting to openings and connected rooms.
-5. Extend the furnished-room prototype to connected rooms, garages, and factories.
+4. Improve learned doorway semantics and connected-room edge reconstruction.
+5. Extend the connected-space suite to garages, factories and larger floor plans.
 6. Evaluate clutter, occlusion, held-out assets/layouts, and real-image transfer.
 
 See [the design notes](docs/design.md) for scene organization and evaluation rules.
@@ -200,3 +201,20 @@ It exports observed surface/edge point clouds and provisional region connections
 it does not fill unseen geometry or demonstrate dynamically walking hardware.
 See [the protocol and reproducible commands](docs/multiroom-experiment.md).
 The full local visualization is `vis/multiroom/report/report.html`.
+
+## Multiple furnished spaces
+
+Four distinct development buildings extend the connected-room pilot: a branching
+home, loop-connected workspaces, an open office with side rooms, and a compact
+apartment. Each uses the same frozen edge model, RGB-D sensor assumptions,
+exploration policy and 300-image budget. Editable JSON specifies the architecture,
+furnishings and start pose; the controller receives acquired observations only.
+
+See [the suite protocol and commands](docs/space-suite-experiment.md). Run
+`scripts/run_space_suite.py` to acquire, evaluate, replay-check and visualize the
+cases sequentially. The aggregate local report is
+`vis/space_suite/report/report.html`; full visualizations remain ignored by Git.
+Room entry, observed edge visibility and learned reconstruction completeness are
+reported separately, including cases that stop with unseen rooms or structure.
+The [public comparison page](https://kiwooshin.github.io/roomgraph-spaces/) contains
+selected moving-camera replays and interactive observed 3D maps.

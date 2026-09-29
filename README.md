@@ -186,3 +186,17 @@ See [the experiment protocol and limitations](docs/active-head-experiment.md).
 The generated report is `vis/active_head/report/report.html`; all raw
 visualizations stay local. This is a validation-room prototype with known poses
 and translated bootstrap views, not autonomous navigation.
+
+## Connected-room exploration
+
+The multi-room pilot starts in a furnished office and expands an observed map
+toward reachable unknown-space frontiers. It uses physically open passages,
+articulated head views, a known-geometry robot self-mask, and short body movements.
+Acquired RGB-D surfaces and learned visible structural edges accumulate in one
+world frame; the controller has no reference floor plan or room destination list.
+
+This explicitly adds ideal depth and known poses to the frozen RGB edge model.
+It exports observed surface/edge point clouds and provisional region connections;
+it does not fill unseen geometry or demonstrate dynamically walking hardware.
+See [the protocol and reproducible commands](docs/multiroom-experiment.md).
+The full local visualization is `vis/multiroom/report/report.html`.

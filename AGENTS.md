@@ -19,11 +19,16 @@ Python, meaningful unit tests, and useful visualizations.
 - Run Ruff and meaningful unit tests with the learning environment when changing
   the trainer. The lightweight `.venv` may skip tests without PyTorch; use the
   host CUDA-enabled Python for the full learning suite.
-- For active-view experiments, expose only acquired RGB predictions and calibration
+- For RGB-only active-view experiments, expose only acquired predictions and calibration
   to the policy. Keep future frames and renderer ground truth behind the evaluator
   boundary; record motion budgets separately from compute latency. Archive frozen
   predictions and verify replay consistency before comparing camera policies.
 - Report synthetic-pilot limitations honestly. A hidden predicted wall is a
   structural hypothesis, not verified free space for robot navigation.
+- Multi-room RGB-D pilots explicitly add acquired ideal depth and known poses.
+  Keep this sensor-assisted result separate from RGB-only reconstruction claims.
+  The planner must never read renderer room labels, reference geometry, or future
+  captures. Record body self filtering, observed-free path checks, and partial
+  completion; a frontier stop does not establish whole-building completeness.
 
 See `docs/training-efficiency.md` and `docs/perception.md` for the protocol.

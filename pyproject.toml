@@ -11,6 +11,7 @@ dependencies = ["numpy>=1.26,<3", "Pillow>=10"]
 
 [project.optional-dependencies]
 dev = ["ruff>=0.11"]
+learning = ["torch>=2.7", "torchvision>=0.22", "scipy>=1.14", "scikit-image>=0.24", "opencv-python-headless>=4.10", "tensorboard>=2.19", "matplotlib>=3.9"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,7 +1,7 @@
 """JSON scene input with a restricted recipe registry and explicit conventions."""
 
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import numpy as np
@@ -37,8 +37,13 @@ def load_scene(path: Path):
     if config.get("units") != "metres" or config.get("up_axis") != "Z":
         raise ValueError("Scene must use metres and Z up")
     room = config["room"]
-    if room["template"] != "room_6x5_door_window_v1" or room["dimensions_m"] != [6, 5, 3]:
-        raise ValueError("This renderer currently supports the calibrated 6 x 5 x 3 m shell")
+    dimensions = np.asarray(room["dimensions_m"], dtype=float)
+    if room["template"] not in {"room_6x5_door_window_v1", "scaled_room_v1"}:
+        raise ValueError("Unknown room template")
+    if dimensions.shape != (3,) or not np.isfinite(dimensions).all() or np.any(dimensions < 2):
+        raise ValueError("Room dimensions must be three finite values of at least 2 metres")
+    if room["template"] == "room_6x5_door_window_v1" and list(dimensions) != [6, 5, 3]:
+        raise ValueError("The original room template has fixed dimensions")
     seen = set()
     for camera in config["cameras"]:
         eye, target = np.asarray(camera["position"]), np.asarray(camera["target"])
@@ -46,7 +51,11 @@ def load_scene(path: Path):
             raise ValueError("Camera poses must contain three finite coordinates")
         if np.linalg.norm(eye - target) < 1e-6:
             raise ValueError("Camera position and target must differ")
-        if not (-3 < eye[0] < 3 and -2.5 < eye[1] < 2.5 and 0 < eye[2] < 3):
+        if not (
+            abs(eye[0]) < dimensions[0] / 2
+            and abs(eye[1]) < dimensions[1] / 2
+            and 0 < eye[2] < dimensions[2]
+        ):
             raise ValueError(f"Camera {camera['id']} is outside the room")
         if camera["id"] in seen or camera["focal_length_mm"] <= 0:
             raise ValueError("Camera IDs must be unique and focal lengths positive")
@@ -71,6 +80,18 @@ def load_scene(path: Path):
     for part in f.parts:
         if not np.isfinite([part.center, part.size, part.rotation]).all() or min(part.size) <= 0:
             raise ValueError(f"Invalid furniture geometry: {part.name}")
+    if room["template"] == "scaled_room_v1":
+        # Translate assembly anchors to the new shell without distorting furniture meshes.
+        scale = dimensions[:2] / [6, 5]
+        anchors = {}
+        for part in f.parts:
+            anchors.setdefault(part.object_id, np.asarray(part.center[:2]))
+        f.parts = [
+            replace(
+                p, center=tuple(np.asarray(p.center) + np.r_[anchors[p.object_id] * (scale - 1), 0])
+            )
+            for p in f.parts
+        ]
     return config, f.parts
 
 

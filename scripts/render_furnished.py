@@ -32,7 +32,7 @@ def main():
         from pxr import Gf, UsdGeom, UsdLux
 
         from roomgraph.furnishings import Part
-        from roomgraph.geometry import demo_room, depth_edge_masks, look_at
+        from roomgraph.geometry import depth_edge_masks, look_at, scaled_room
         from roomgraph.scene_config import compiled_manifest, load_scene
         from roomgraph.usd_furnishing import SceneBuilder
         from roomgraph.visualization import camera_triangle, floorplan_pixel
@@ -57,7 +57,9 @@ def main():
             samples = args.samples or config["render"]["samples_per_pixel"]
             settings.set("/rtx/pathtracing/spp", min(samples, 32))
             settings.set("/rtx/pathtracing/totalSpp", samples)
-            boxes, edges = demo_room()
+            dimensions = np.asarray(config["room"]["dimensions_m"])
+            shell_scale = dimensions / [6, 5, 3]
+            boxes, edges = scaled_room(dimensions)
             builder.material(
                 "wall", (0.78, 0.76, 0.69), texture="white_plaster_02", diffuse_texture=False
             )
@@ -108,8 +110,8 @@ def main():
                         trim_name,
                         "trim",
                         "rounded_box",
-                        center,
-                        size,
+                        tuple(np.asarray(center) * shell_scale),
+                        tuple(np.asarray(size) * shell_scale),
                         "white",
                         radius=0.003,
                     ),
@@ -155,18 +157,36 @@ def main():
                     stage.GetPrimAtPath("/World/Furnishings/" + object_id), category
                 )
 
+            robot_transform = None
+            if config.get("headcam", {}).get("enabled", False):
+                from roomgraph.headcam import proxy_parts, robot_pose
+
+                builder.material(
+                    "robot_shell",
+                    (0.60, 0.56, 0.48),
+                    0.85,
+                    texture="denim_fabric",
+                    diffuse_texture=False,
+                )
+                builder.material("robot_dark", (0.025, 0.028, 0.03), 0.5)
+                root = UsdGeom.Xform.Define(stage, "/World/Robot")
+                robot_transform = root.AddTransformOp()
+                for part in proxy_parts(config["headcam"].get("arm_reach_m", 0.52)):
+                    builder.part(part, root="/World/Robot")
+                add_update_semantics(root.GetPrim(), "robot")
+
             dome = UsdLux.DomeLight.Define(stage, "/World/Lights/Sky")
             dome.CreateIntensityAttr(config["lighting"]["daylight_intensity"])
             dome.CreateColorAttr(Gf.Vec3f(0.82, 0.90, 1.0))
             # Large invisible area emitters produce soft daylight and ceiling bounce.
             window_light = UsdLux.RectLight.Define(stage, "/World/Lights/Window")
-            window_light.AddTranslateOp().Set(Gf.Vec3d(3.35, 0, 1.7))
+            window_light.AddTranslateOp().Set(Gf.Vec3d(*(np.array([3.35, 0, 1.7]) * shell_scale)))
             window_light.AddRotateYOp().Set(90)
             window_light.CreateWidthAttr(2.0)
             window_light.CreateHeightAttr(1.5)
             window_light.CreateIntensityAttr(config["lighting"]["daylight_intensity"] * 1.6)
             ceiling_light = UsdLux.RectLight.Define(stage, "/World/Lights/Ceiling")
-            ceiling_light.AddTranslateOp().Set(Gf.Vec3d(0, 0, 2.92))
+            ceiling_light.AddTranslateOp().Set(Gf.Vec3d(0, 0, float(dimensions[2] - 0.08)))
             ceiling_light.CreateWidthAttr(3.0)
             ceiling_light.CreateHeightAttr(2.0)
             ceiling_light.CreateIntensityAttr(config["lighting"]["ceiling_intensity"])
@@ -204,6 +224,8 @@ def main():
                 camera.CreateVerticalApertureAttr(24 * height / width)
                 pose = look_at(view["position"], view["target"])
                 transform.Set(Gf.Matrix4d((pose @ np.diag([1, -1, -1, 1])).T.tolist()))
+                if robot_transform is not None:
+                    robot_transform.Set(Gf.Matrix4d(robot_pose(pose).T.tolist()))
                 for _ in range(2):
                     rep.orchestrator.step(rt_subframes=4)
                 rgb = np.asarray(annotators["rgb"].get_data())[..., :3].copy()
@@ -270,11 +292,11 @@ def main():
 
             UsdGeom.Imageable(stage.GetPrimAtPath("/World/Architecture/ceiling")).MakeInvisible()
             camera.CreateProjectionAttr("orthographic")
-            extent = 8.7
+            extent = max(8.7, float(dimensions[0] + 1), float((dimensions[1] + 1) * width / height))
             camera.CreateHorizontalApertureAttr(extent * 10)
             camera.CreateVerticalApertureAttr(extent * 10 * height / width)
             matrix = np.eye(4)
-            matrix[:3, 3] = [0, 0, 8]
+            matrix[:3, 3] = [0, 0, max(8, float(dimensions[2] + 3))]
             transform.Set(Gf.Matrix4d(matrix.T.tolist()))
             for _ in range(2):
                 rep.orchestrator.step(rt_subframes=4)

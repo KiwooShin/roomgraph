@@ -1,6 +1,6 @@
 """Metric room geometry and pinhole camera operations, independent of Isaac Sim."""
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 
 import numpy as np
 from numpy.typing import NDArray
@@ -62,6 +62,25 @@ def demo_room() -> tuple[list[Box], list[Edge]]:
     window = [(3, -1, 1), (3, 1, 1), (3, 1, 2.2), (3, -1, 2.2)]
     for index, point in enumerate(window):
         edges.append(Edge(f"window_{index}", point, window[(index + 1) % 4], "window"))
+    return boxes, edges
+
+
+def scaled_room(dimensions):
+    """Resize the calibrated shell; openings keep their normalized positions."""
+    scale = np.asarray(dimensions, dtype=float) / [6, 5, 3]
+    if scale.shape != (3,) or not np.isfinite(scale).all() or np.any(scale <= 0):
+        raise ValueError("Room dimensions must be three finite positive values")
+    boxes, edges = demo_room()
+    boxes = [
+        replace(
+            b, lower=tuple(np.asarray(b.lower) * scale), upper=tuple(np.asarray(b.upper) * scale)
+        )
+        for b in boxes
+    ]
+    edges = [
+        replace(e, start=tuple(np.asarray(e.start) * scale), end=tuple(np.asarray(e.end) * scale))
+        for e in edges
+    ]
     return boxes, edges
 
 

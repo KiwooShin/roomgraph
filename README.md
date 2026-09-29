@@ -2,7 +2,8 @@
 
 Synthetic indoor imagery and geometry-derived structural-edge annotations for
 multi-view reconstruction. The first milestone is a calibrated Isaac Sim room
-capture on NVIDIA DGX Spark. Training and reconstruction are subsequent milestones.
+capture on NVIDIA DGX Spark. A trained structural-edge baseline and calibrated rectangular-room reconstruction
+are now implemented; see the measured head-camera pilot below.
 
 ## Current scope
 
@@ -120,8 +121,8 @@ Generated data, caches, logs, and virtual environments are excluded from Git.
 
 1. Validate native GPU rendering, camera conventions, and structural annotations.
 2. Parameterize empty layouts and capture trajectories; split data by building.
-3. Implement dataset loading, edge/corner prediction, training, and evaluation.
-4. Validate reconstruction with ground-truth edges, then predicted edges.
+3. Extend the trained edge-detection pilot to diverse layouts and corner prediction.
+4. Extend calibrated rectangular-shell fitting to openings and connected rooms.
 5. Extend the furnished-room prototype to connected rooms, garages, and factories.
 6. Evaluate clutter, occlusion, held-out assets/layouts, and real-image transfer.
 
@@ -153,3 +154,21 @@ To export compressed still previews and selected scene JSON for a website:
 
 Exporting to a website is an explicit publication step. The full `vis/` captures,
 USD scenes, depth arrays, and downloaded assets remain ignored in this repository.
+
+## Trained head-camera perception pilot
+
+The connected pipeline now generates room-disjoint training data, trains a
+ResNet-18 edge model with TensorBoard tracking, and reconstructs a rectangular
+room shell from predicted edges and known camera poses. Head-camera renders
+include an original humanoid proxy for self-occlusion and mirror reflections.
+
+Measured on 96 test images from four held-out synthetic room instances:
+visible-edge F1 **0.916**, typed amodal-edge F1 **0.958**, and mean room-dimension
+error **0.023 m**. These are controlled single-room results with known poses and
+axes, not real-world robot reconstruction accuracy.
+
+See [pipeline and commands](docs/perception.md),
+[measured results](docs/results-headcam-v1.md), and
+[training configuration](configs/training/headcam_v1.json).
+The local gallery is `vis/perception/report.html`; training logs and checkpoints
+are in `artifacts/runs/headcam_v1/`. All generated data and checkpoints stay local.

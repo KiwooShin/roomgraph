@@ -1,0 +1,93 @@
+"""Procedural humanoid proxy for head-camera occlusion and mirror rendering.
+
+The 1.68 m silhouette is inspired by NEO's public height. This is original proxy
+geometry, not an official 1X mesh, kinematic model, or calibrated camera model.
+"""
+
+import numpy as np
+
+from roomgraph.furnishings import Part
+
+
+def proxy_parts(reach=0.52):
+    parts = []
+
+    def add(name, center, size, material="robot_shell", shape="rounded_box", rotation=(0, 0, 0)):
+        parts.append(
+            Part(
+                name,
+                "headcam_robot",
+                "robot",
+                shape,
+                tuple(center),
+                tuple(size),
+                material,
+                tuple(rotation),
+                radius=min(min(size) / 3, 0.055),
+            )
+        )
+
+    def bone(name, a, b, radius, material="robot_shell"):
+        a, b = np.asarray(a), np.asarray(b)
+        delta = b - a
+        length = np.linalg.norm(delta)
+        theta = np.degrees(np.arccos(delta[2] / length))
+        phi = np.degrees(np.arctan2(delta[1], delta[0]))
+        add(name, (a + b) / 2, (radius, radius, length), material, "cylinder", (0, theta, phi))
+        add(name + "_cap", b, (radius, radius, radius), material, "sphere")
+
+    add("torso", (0, 0, 1.14), (0.37, 0.23, 0.44))
+    add("chest_panel", (0, 0.119, 1.23), (0.24, 0.015, 0.18), "robot_dark")
+    add("waist", (0, 0, 0.88), (0.25, 0.20, 0.10), "robot_dark")
+    add("pelvis", (0, 0, 0.76), (0.32, 0.24, 0.19))
+    add("neck", (0, 0, 1.40), (0.085, 0.085, 0.11), "robot_dark", "cylinder")
+    add("head", (0, 0, 1.55), (0.205, 0.195, 0.26))
+    add("visor", (0, 0.101, 1.585), (0.174, 0.014, 0.067), "robot_dark")
+    for side in (-1, 1):
+        prefix = "left" if side < 0 else "right"
+        add(
+            prefix + "_lens", (side * 0.045, 0.112, 1.585), (0.022, 0.009, 0.022), "black", "sphere"
+        )
+        bone(prefix + "_thigh", (side * 0.10, 0, 0.73), (side * 0.11, 0.015, 0.42), 0.14)
+        add(prefix + "_knee", (side * 0.11, 0.02, 0.39), (0.12, 0.13, 0.11), "robot_dark", "sphere")
+        bone(prefix + "_shin", (side * 0.11, 0.015, 0.36), (side * 0.11, 0, 0.11), 0.11)
+        add(prefix + "_foot", (side * 0.11, 0.055, 0.052), (0.125, 0.27, 0.105), "robot_dark")
+        shoulder = (side * 0.245, 0, 1.31)
+        elbow = (side * 0.31, 0.19, 1.04)
+        wrist = (side * 0.24, reach, 1.11 + (reach - 0.5) * 0.3)
+        add(prefix + "_shoulder", shoulder, (0.15, 0.15, 0.15), shape="sphere")
+        bone(prefix + "_upper_arm", shoulder, elbow, 0.115)
+        add(prefix + "_elbow", elbow, (0.10, 0.10, 0.10), "robot_dark", "sphere")
+        bone(prefix + "_forearm", elbow, wrist, 0.105)
+        add(
+            prefix + "_palm",
+            (wrist[0], wrist[1] + 0.055, wrist[2]),
+            (0.09, 0.12, 0.055),
+            "robot_dark",
+        )
+        for finger in range(4):
+            add(
+                prefix + f"_finger_{finger}",
+                (wrist[0] + (finger - 1.5) * 0.019, wrist[1] + 0.13, wrist[2] - 0.008),
+                (0.016, 0.065, 0.02),
+                "robot_dark",
+            )
+        add(
+            prefix + "_thumb",
+            (wrist[0] - side * 0.054, wrist[1] + 0.06, wrist[2] - 0.014),
+            (0.025, 0.06, 0.025),
+            "robot_dark",
+        )
+    return parts
+
+
+def robot_pose(camera_to_world, camera_height=1.585):
+    """Place an upright body behind the head camera; metric camera pose is input."""
+    forward = np.asarray(camera_to_world[:3, 2]).copy()
+    forward[2] = 0
+    forward /= np.linalg.norm(forward)
+    right = np.cross(forward, [0, 0, 1])
+    pose = np.eye(4)
+    pose[:3, :3] = np.column_stack([right, forward, [0, 0, 1]])
+    pose[:3, 3] = camera_to_world[:3, 3] - forward * 0.135 - [0, 0, camera_height]
+    return pose

@@ -6,8 +6,9 @@ to review in Git and reproduce. Start with `configs/scenes/bedroom.json`.
 
 Coordinates use metres, Z up, and the room centre at floor level as the origin.
 Yaw is in degrees around +Z. The current shell is a fixed 6 × 5 × 3 m room with
-a north doorway and an east window opening. Its template and dimensions are
-validated; arbitrary dimensions and connected rooms are not implemented yet.
+a north doorway and an east window opening. The original template has fixed dimensions. The `scaled_room_v1` benchmark
+template varies room dimensions while preserving normalized opening positions
+and translating furniture assembly anchors. Connected rooms are not implemented.
 
 `furnishings` contains named recipes with explicit parameters. For example:
 

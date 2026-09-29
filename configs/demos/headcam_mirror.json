@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "name": "headcam_mirror_demo",
+  "title": "Head camera and mirror verification",
+  "description": "A bed, study desk, chair, dresser, bedside lamps, mirror, plants and textiles.",
+  "units": "metres",
+  "up_axis": "Z",
+  "seed": 7,
+  "room": {
+    "template": "room_6x5_door_window_v1",
+    "dimensions_m": [
+      6,
+      5,
+      3
+    ],
+    "accent_color": [
+      0.31,
+      0.43,
+      0.34
+    ]
+  },
+  "furnishings": [
+    {
+      "recipe": "rug",
+      "parameters": {
+        "name": "bed_rug",
+        "xy": [
+          0.65,
+          0.45
+        ],
+        "size": [
+          2.85,
+          2.85
+        ]
+      }
+    },
+    {
+      "recipe": "bed",
+      "parameters": {
+        "xy": [
+          0.65,
+          0.85
+        ]
+      }
+    },
+    {
+      "recipe": "cabinet",
+      "parameters": {
+        "name": "nightstand_0",
+        "xy": [
+          -0.72,
+          1.68
+        ],
+        "size": [
+          0.52,
+          0.46,
+          0.5
+        ]
+      }
+    },
+    {
+      "recipe": "lamp",
+      "parameters": {
+        "name": "bedside_lamp_0",
+        "xyz": [
+          -0.72,
+          1.68,
+          0.57
+        ]
+      }
+    },
+    {
+      "recipe": "cabinet",
+      "parameters": {
+        "name": "nightstand_1",
+        "xy": [
+          2.03,
+          1.68
+        ],
+        "size": [
+          0.52,
+          0.46,
+          0.5
+        ]
+      }
+    },
+    {
+      "recipe": "lamp",
+      "parameters": {
+        "name": "bedside_lamp_1",
+        "xyz": [
+          2.03,
+          1.68,
+          0.57
+        ]
+      }
+    },
+    {
+      "recipe": "workstation",
+      "parameters": {
+        "name": "study_desk",
+        "xy": [
+          -1.65,
+          -1.92
+        ],
+        "yaw": 180
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "study_chair",
+        "xy": [
+          -1.65,
+          -1.1
+        ],
+        "yaw": 180,
+        "material": "sage"
+      }
+    },
+    {
+      "recipe": "cabinet",
+      "parameters": {
+        "name": "dresser",
+        "xy": [
+          -2.65,
+          0.52
+        ],
+        "size": [
+          1.15,
+          0.48,
+          0.88
+        ],
+        "yaw": 90
+      }
+    },
+    {
+      "recipe": "mirror",
+      "parameters": {
+        "name": "wall_mirror",
+        "xy": [
+          0.5,
+          -2.43
+        ],
+        "yaw": 180
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "corner_plant",
+        "xyz": [
+          2.45,
+          -1.62,
+          0
+        ],
+        "scale": 0.8
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "dresser_plant",
+        "xyz": [
+          -2.62,
+          0.78,
+          0.96
+        ],
+        "scale": 0.32
+      }
+    },
+    {
+      "recipe": "artwork",
+      "parameters": {
+        "name": "bed_art",
+        "xy": [
+          0.65,
+          2.43
+        ]
+      }
+    },
+    {
+      "recipe": "curtains",
+      "parameters": {}
+    }
+  ],
+  "asset_overrides": {
+    "plants": "potted_plant_02",
+    "sofa": "sofa_03",
+    "lounge_chairs": "modern_arm_chair_01",
+    "dining_chairs": "dining_chair_02"
+  },
+  "cameras": [
+    {
+      "id": "Mirror",
+      "position": [
+        0.5,
+        -1.05,
+        1.585
+      ],
+      "target": [
+        0.5,
+        -2.43,
+        1.4
+      ],
+      "focal_length_mm": 17
+    },
+    {
+      "id": "Room",
+      "position": [
+        -2.3,
+        -1.5,
+        1.585
+      ],
+      "target": [
+        0.5,
+        0.8,
+        1.0
+      ],
+      "focal_length_mm": 14
+    }
+  ],
+  "lighting": {
+    "daylight_intensity": 900,
+    "ceiling_intensity": 1500,
+    "color_temperature_kelvin": 5500
+  },
+  "render": {
+    "width": 1152,
+    "height": 768,
+    "samples_per_pixel": 128,
+    "mode": "PathTracing"
+  },
+  "headcam": {
+    "enabled": true,
+    "arm_reach_m": 0.52,
+    "model": "original_neo_style_proxy_v1"
+  }
+}

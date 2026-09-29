@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "name": "kitchen",
+  "title": "Kitchen & dining",
+  "description": "Cabinets, countertops, sink, cooker, fridge, dining table, chairs and kitchenware.",
+  "units": "metres",
+  "up_axis": "Z",
+  "seed": 7,
+  "room": {
+    "template": "room_6x5_door_window_v1",
+    "dimensions_m": [
+      6,
+      5,
+      3
+    ],
+    "accent_color": [
+      0.45,
+      0.53,
+      0.48
+    ]
+  },
+  "furnishings": [
+    {
+      "recipe": "kitchen_suite",
+      "parameters": {}
+    }
+  ],
+  "asset_overrides": {
+    "plants": "potted_plant_02",
+    "sofa": "sofa_03",
+    "lounge_chairs": "modern_arm_chair_01",
+    "dining_chairs": "dining_chair_02"
+  },
+  "cameras": [
+    {
+      "id": "C1",
+      "position": [
+        2.5,
+        -2.0,
+        1.85
+      ],
+      "target": [
+        -0.5,
+        1.4,
+        1.1
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C2",
+      "position": [
+        -2.6,
+        -1.9,
+        1.75
+      ],
+      "target": [
+        0.8,
+        1.0,
+        1.0
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C3",
+      "position": [
+        2.65,
+        0.7,
+        1.75
+      ],
+      "target": [
+        -1.0,
+        0.0,
+        1.0
+      ],
+      "focal_length_mm": 15
+    }
+  ],
+  "lighting": {
+    "daylight_intensity": 900,
+    "ceiling_intensity": 1500,
+    "color_temperature_kelvin": 5500
+  },
+  "render": {
+    "width": 1152,
+    "height": 768,
+    "samples_per_pixel": 128,
+    "mode": "PathTracing"
+  }
+}

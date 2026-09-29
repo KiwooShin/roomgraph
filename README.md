@@ -11,8 +11,10 @@ window opening. Its 20 annotated edges describe the **interior architectural
 shell** and inner opening contours. Exterior wall edges, opening reveal edges,
 material boundaries, and mesh triangulation seams are excluded.
 
-The architecture is independent of the renderer. Furnished scenes will add a
-separate object layer, preserving paired empty/furnished geometry and camera poses.
+Four furnished variants now use this shell: bedroom/study, kitchen/dining, living
+room, and shared office. Furniture is a separate layer, with procedural furnishings
+and textured CC0 assets. Each scene has three calibrated perspective views and an
+orthographic top-down view with camera position/direction triangles.
 
 ## Installation on DGX Spark
 
@@ -68,9 +70,38 @@ RGB/depth output is invalid. This is a geometric correctness gate, not a claim
 about model accuracy or synthetic-to-real performance.
 
 Ground-truth visibility currently uses analytic ray intersections with the demo's
-opaque boxes. Imported furniture will require a general mesh visibility backend.
+opaque boxes. The furnished exporter uses renderer depth instead.
 Dense metric edge sampling is suitable for the fixed demo camera distances; a
 production exporter will use clipped, adaptive screen-space rasterization.
+
+## Furnished scenes and editable JSON
+
+After installing the development environment below:
+
+```bash
+.venv/bin/python scripts/download_furnishing_assets.py
+./installation/run_python.sh scripts/render_furnished.py --output vis/furnished
+.venv/bin/python scripts/make_furnished_report.py vis/furnished
+```
+
+Open `vis/furnished/report.html` for the local gallery, RGB/structural-edge toggles,
+furniture inventories, and top-down camera maps. `overview.jpg` and
+`top_down_overview.jpg` provide contact sheets. The four scenes produce 12
+perspective views at 1152 × 768, with 128 path-tracing samples per pixel by default.
+
+Edit [configs/scenes](configs/scenes) to change furnishings, camera poses,
+lighting, and render settings. See [the scene format](docs/scene-format.md).
+Each output includes the input `scene.json`, a `manifest.json`, and a USD scene.
+Assets download to ignored `assets/cache/`; their source URLs, CC0 license, and
+checksums are recorded in [assets/catalog.json](assets/catalog.json).
+Both `vis/` and downloaded assets remain local.
+
+Furnished visibility uses rendered first-hit depth with a 2.5 cm tolerance.
+Masks distinguish visible, hidden, and full projected architectural edges;
+furniture edges and reflected structure in mirrors are excluded. This is a
+prototype annotation method with pixel/silhouette approximation, not yet a
+production dataset validation pipeline. These are four decorated versions of one
+room shell, not yet connected multi-room buildings or industrial environments.
 
 ## Development
 
@@ -91,7 +122,7 @@ Generated data, caches, logs, and virtual environments are excluded from Git.
 2. Parameterize empty layouts and capture trajectories; split data by building.
 3. Implement dataset loading, edge/corner prediction, training, and evaluation.
 4. Validate reconstruction with ground-truth edges, then predicted edges.
-5. Add furnished kitchens, offices, bedrooms, garages, and industrial spaces.
+5. Extend the furnished-room prototype to connected rooms, garages, and factories.
 6. Evaluate clutter, occlusion, held-out assets/layouts, and real-image transfer.
 
 See [the design notes](docs/design.md) for scene organization and evaluation rules.

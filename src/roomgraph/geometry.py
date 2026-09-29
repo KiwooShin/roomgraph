@@ -162,3 +162,33 @@ def edge_masks(edges, boxes, intrinsics, camera_to_world, width, height):
         pixels = pixels[unobstructed]
         visible[pixels[:, 1], pixels[:, 0]] = 255
     return visible, full
+
+
+def depth_edge_masks(edges, intrinsics, camera_to_world, depth, tolerance=0.025):
+    """Approximate direct visibility using renderer depth, including mesh furniture.
+
+    Edge samples compare their optical-axis depth to the corresponding rendered
+    pixel, with 2.5 cm tolerance for silhouettes and finite pixel footprints.
+    Reflected architecture is excluded: mirrors are treated as first-hit surfaces.
+    """
+    height, width = depth.shape
+    visible = np.zeros((height, width), dtype=np.uint8)
+    full = np.zeros_like(visible)
+    for edge in edges:
+        count = max(2, int(np.linalg.norm(np.subtract(edge.end, edge.start)) * 2000))
+        pixels, z = project(np.linspace(edge.start, edge.end, count), intrinsics, camera_to_world)
+        valid = (
+            (z > 0.05)
+            & np.isfinite(pixels).all(axis=1)
+            & (pixels[:, 0] >= 0)
+            & (pixels[:, 0] < width)
+            & (pixels[:, 1] >= 0)
+            & (pixels[:, 1] < height)
+        )
+        xy, z = pixels[valid].astype(int), z[valid]
+        measured = depth[xy[:, 1], xy[:, 0]]
+        full[xy[:, 1], xy[:, 0]] = 255
+        seen = (measured > 0) & (z <= measured + tolerance)
+        xy = xy[seen]
+        visible[xy[:, 1], xy[:, 0]] = 255
+    return visible, full

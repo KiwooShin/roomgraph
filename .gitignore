@@ -10,3 +10,4 @@ dist/
 
 # Local visualization outputs (never commit generated media).
 /vis/
+/assets/cache/

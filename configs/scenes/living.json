@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "name": "living",
+  "title": "Living room",
+  "description": "A sofa, lounge chairs, coffee table, media console, books, mirror and plants.",
+  "units": "metres",
+  "up_axis": "Z",
+  "seed": 7,
+  "room": {
+    "template": "room_6x5_door_window_v1",
+    "dimensions_m": [
+      6,
+      5,
+      3
+    ],
+    "accent_color": [
+      0.56,
+      0.37,
+      0.26
+    ]
+  },
+  "furnishings": [
+    {
+      "recipe": "rug",
+      "parameters": {
+        "name": "living_rug",
+        "xy": [
+          0.4,
+          0.2
+        ],
+        "size": [
+          3.15,
+          2.65
+        ]
+      }
+    },
+    {
+      "recipe": "sofa",
+      "parameters": {
+        "name": "sofa",
+        "xy": [
+          0.55,
+          1.8
+        ]
+      }
+    },
+    {
+      "recipe": "table",
+      "parameters": {
+        "name": "coffee_table",
+        "xy": [
+          0.5,
+          0.12
+        ],
+        "size": [
+          1.25,
+          0.7,
+          0.39
+        ],
+        "material": "walnut"
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "lounge_chair_0",
+        "xy": [
+          -1.5,
+          0.0
+        ],
+        "yaw": -65,
+        "material": "rust"
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "lounge_chair_1",
+        "xy": [
+          2.05,
+          0.1
+        ],
+        "yaw": 65,
+        "material": "sage"
+      }
+    },
+    {
+      "recipe": "cabinet",
+      "parameters": {
+        "name": "media_console",
+        "xy": [
+          0.55,
+          -2.15
+        ],
+        "size": [
+          1.8,
+          0.5,
+          0.56
+        ],
+        "yaw": 180
+      }
+    },
+    {
+      "recipe": "object",
+      "parameters": {
+        "name": "television",
+        "category": "television",
+        "origin": [
+          0.55,
+          -2.35,
+          0
+        ],
+        "yaw": 180
+      }
+    },
+    {
+      "recipe": "add",
+      "parameters": {
+        "name": "bezel",
+        "center": [
+          0,
+          0,
+          1.3
+        ],
+        "size": [
+          1.45,
+          0.06,
+          0.83
+        ],
+        "material": "black"
+      }
+    },
+    {
+      "recipe": "add",
+      "parameters": {
+        "name": "screen",
+        "center": [
+          0,
+          -0.034,
+          1.3
+        ],
+        "size": [
+          1.38,
+          0.01,
+          0.76
+        ],
+        "material": "screen",
+        "radius": 0.005
+      }
+    },
+    {
+      "recipe": "bookshelf",
+      "parameters": {
+        "name": "bookcase",
+        "xy": [
+          -2.73,
+          0.5
+        ],
+        "yaw": 90
+      }
+    },
+    {
+      "recipe": "mirror",
+      "parameters": {
+        "name": "living_mirror",
+        "xy": [
+          -2.95,
+          -1.2
+        ],
+        "yaw": 90
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "sofa_plant",
+        "xyz": [
+          2.4,
+          1.75,
+          0
+        ],
+        "scale": 0.8
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "small_plant",
+        "xyz": [
+          -1.9,
+          -1.6,
+          0
+        ],
+        "scale": 0.72
+      }
+    },
+    {
+      "recipe": "lamp",
+      "parameters": {
+        "name": "reading_light",
+        "xyz": [
+          -0.97,
+          1.8,
+          0
+        ],
+        "floor": true
+      }
+    },
+    {
+      "recipe": "artwork",
+      "parameters": {
+        "name": "sofa_art",
+        "xy": [
+          0.55,
+          2.43
+        ]
+      }
+    },
+    {
+      "recipe": "mug",
+      "parameters": {
+        "name": "coffee",
+        "xyz": [
+          0.75,
+          0.12,
+          0.43
+        ],
+        "material": "rust"
+      }
+    },
+    {
+      "recipe": "object",
+      "parameters": {
+        "name": "table_books",
+        "category": "books",
+        "origin": [
+          0.1,
+          0.13,
+          0.43
+        ],
+        "yaw": 12
+      }
+    },
+    {
+      "recipe": "add",
+      "parameters": {
+        "name": "book_0",
+        "center": [
+          0,
+          0,
+          0.02
+        ],
+        "size": [
+          0.3,
+          0.23,
+          0.034
+        ],
+        "material": "navy",
+        "radius": 0.005
+      }
+    },
+    {
+      "recipe": "add",
+      "parameters": {
+        "name": "book_1",
+        "center": [
+          0,
+          0,
+          0.05500000000000001
+        ],
+        "size": [
+          0.3,
+          0.23,
+          0.034
+        ],
+        "material": "ivory",
+        "radius": 0.005
+      }
+    },
+    {
+      "recipe": "add",
+      "parameters": {
+        "name": "book_2",
+        "center": [
+          0,
+          0,
+          0.09000000000000001
+        ],
+        "size": [
+          0.3,
+          0.23,
+          0.034
+        ],
+        "material": "sage",
+        "radius": 0.005
+      }
+    },
+    {
+      "recipe": "curtains",
+      "parameters": {}
+    }
+  ],
+  "asset_overrides": {
+    "plants": "potted_plant_02",
+    "sofa": "sofa_03",
+    "lounge_chairs": "modern_arm_chair_01",
+    "dining_chairs": "dining_chair_02"
+  },
+  "cameras": [
+    {
+      "id": "C1",
+      "position": [
+        -2.65,
+        -1.9,
+        1.8
+      ],
+      "target": [
+        0.7,
+        0.6,
+        1.0
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C2",
+      "position": [
+        2.55,
+        -1.85,
+        1.7
+      ],
+      "target": [
+        -0.7,
+        0.65,
+        1.0
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C3",
+      "position": [
+        -2.4,
+        1.35,
+        1.7
+      ],
+      "target": [
+        0.65,
+        -1.1,
+        1.0
+      ],
+      "focal_length_mm": 15
+    }
+  ],
+  "lighting": {
+    "daylight_intensity": 900,
+    "ceiling_intensity": 1500,
+    "color_temperature_kelvin": 5500
+  },
+  "render": {
+    "width": 1152,
+    "height": 768,
+    "samples_per_pixel": 128,
+    "mode": "PathTracing"
+  }
+}

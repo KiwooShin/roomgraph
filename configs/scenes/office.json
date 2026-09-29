@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "name": "office",
+  "title": "Shared creative office",
+  "description": "Three workstations, monitors, keyboards, chairs, bookshelves, storage and plants.",
+  "units": "metres",
+  "up_axis": "Z",
+  "seed": 7,
+  "room": {
+    "template": "room_6x5_door_window_v1",
+    "dimensions_m": [
+      6,
+      5,
+      3
+    ],
+    "accent_color": [
+      0.12,
+      0.23,
+      0.28
+    ]
+  },
+  "furnishings": [
+    {
+      "recipe": "workstation",
+      "parameters": {
+        "name": "desk_0",
+        "xy": [
+          -0.45,
+          1.82
+        ]
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "chair_0",
+        "xy": [
+          -0.45,
+          0.9
+        ],
+        "material": "teal"
+      }
+    },
+    {
+      "recipe": "workstation",
+      "parameters": {
+        "name": "desk_1",
+        "xy": [
+          1.65,
+          1.82
+        ]
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "chair_1",
+        "xy": [
+          1.65,
+          0.9
+        ],
+        "material": "rust"
+      }
+    },
+    {
+      "recipe": "workstation",
+      "parameters": {
+        "name": "desk_2",
+        "xy": [
+          -2.55,
+          0.1
+        ],
+        "yaw": 90
+      }
+    },
+    {
+      "recipe": "chair",
+      "parameters": {
+        "name": "chair_2",
+        "xy": [
+          -1.62,
+          0.1
+        ],
+        "yaw": 90
+      }
+    },
+    {
+      "recipe": "bookshelf",
+      "parameters": {
+        "name": "library",
+        "xy": [
+          -0.9,
+          -2.2
+        ],
+        "yaw": 180
+      }
+    },
+    {
+      "recipe": "cabinet",
+      "parameters": {
+        "name": "office_storage",
+        "xy": [
+          1.45,
+          -2.15
+        ],
+        "size": [
+          1.25,
+          0.52,
+          0.83
+        ],
+        "yaw": 180,
+        "material": "white"
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "large_plant",
+        "xyz": [
+          2.48,
+          0.1,
+          0
+        ],
+        "scale": 0.8
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "library_plant",
+        "xyz": [
+          -2.4,
+          1.6,
+          0
+        ],
+        "scale": 1.0
+      }
+    },
+    {
+      "recipe": "plant",
+      "parameters": {
+        "name": "cabinet_plant",
+        "xyz": [
+          1.0,
+          -2.1,
+          0.92
+        ],
+        "scale": 0.36
+      }
+    },
+    {
+      "recipe": "artwork",
+      "parameters": {
+        "name": "office_art",
+        "xy": [
+          0.6,
+          2.43
+        ]
+      }
+    },
+    {
+      "recipe": "rug",
+      "parameters": {
+        "name": "office_rug",
+        "xy": [
+          0.0,
+          -0.15
+        ],
+        "size": [
+          2.1,
+          1.7
+        ],
+        "material": "navy"
+      }
+    }
+  ],
+  "asset_overrides": {
+    "plants": "potted_plant_02",
+    "sofa": "sofa_03",
+    "lounge_chairs": "modern_arm_chair_01",
+    "dining_chairs": "dining_chair_02"
+  },
+  "cameras": [
+    {
+      "id": "C1",
+      "position": [
+        2.6,
+        -2.1,
+        1.85
+      ],
+      "target": [
+        -0.6,
+        1.0,
+        1.0
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C2",
+      "position": [
+        -2.6,
+        -2.0,
+        1.8
+      ],
+      "target": [
+        0.8,
+        1.2,
+        1.0
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C3",
+      "position": [
+        2.55,
+        1.2,
+        1.7
+      ],
+      "target": [
+        -1.5,
+        -0.5,
+        1.0
+      ],
+      "focal_length_mm": 15
+    }
+  ],
+  "lighting": {
+    "daylight_intensity": 900,
+    "ceiling_intensity": 1500,
+    "color_temperature_kelvin": 5500
+  },
+  "render": {
+    "width": 1152,
+    "height": 768,
+    "samples_per_pixel": 128,
+    "mode": "PathTracing"
+  }
+}

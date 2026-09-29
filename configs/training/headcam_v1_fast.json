@@ -1,0 +1,27 @@
+{
+  "dataset": "artifacts/datasets/headcam_v1",
+  "run_dir": "artifacts/runs/headcam_v1_fast",
+  "seed": 42,
+  "epochs": 60,
+  "batch_size": 16,
+  "learning_rate": 0.0004,
+  "weight_decay": 0.0001,
+  "workers": 2,
+  "amp": true,
+  "pretrained": true,
+  "patience": 15,
+  "eval_every": 2,
+  "tolerance_pixels": 2,
+  "thresholds": [
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8
+  ],
+  "compile_model": true,
+  "compile_loss": true,
+  "checkpoint_every": 1
+}

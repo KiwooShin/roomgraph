@@ -108,6 +108,9 @@ python -m tensorboard.main --logdir artifacts/runs --host 127.0.0.1 --port 6006
 ```
 
 Resume an interrupted run with `--resume artifacts/runs/headcam_v1/last.pt`.
+Use `--run-dir` to start another experiment without overwriting existing outputs.
+See [training efficiency](training-efficiency.md) for matched speed comparisons,
+optional model/loss compilation, and checkpoint integrity checks.
 For inference on another compatible calibrated capture, after evaluation has
 written the validation-selected threshold:
 

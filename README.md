@@ -168,7 +168,8 @@ error **0.023 m**. These are controlled single-room results with known poses and
 axes, not real-world robot reconstruction accuracy.
 
 See [pipeline and commands](docs/perception.md),
-[measured results](docs/results-headcam-v1.md), and
+[measured results](docs/results-headcam-v1.md),
+[training efficiency and robustness](docs/training-efficiency.md), and
 [training configuration](configs/training/headcam_v1.json).
 The local gallery is `vis/perception/report.html`; training logs and checkpoints
 are in `artifacts/runs/headcam_v1/`. All generated data and checkpoints stay local.

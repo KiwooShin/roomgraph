@@ -13,7 +13,7 @@ material boundaries, and mesh triangulation seams are excluded.
 
 Four furnished variants now use this shell: bedroom/study, kitchen/dining, living
 room, and shared office. Furniture is a separate layer, with procedural furnishings
-and textured CC0 assets. Each scene has three calibrated perspective views and an
+and textured CC0 assets. Each scene has eight calibrated perspective views and an
 orthographic top-down view with camera position/direction triangles.
 
 ## Installation on DGX Spark
@@ -86,7 +86,7 @@ After installing the development environment below:
 
 Open `vis/furnished/report.html` for the local gallery, RGB/structural-edge toggles,
 furniture inventories, and top-down camera maps. `overview.jpg` and
-`top_down_overview.jpg` provide contact sheets. The four scenes produce 12
+`top_down_overview.jpg` provide contact sheets. The four scenes produce 32
 perspective views at 1152 × 768, with 128 path-tracing samples per pixel by default.
 
 Edit [configs/scenes](configs/scenes) to change furnishings, camera poses,
@@ -126,3 +126,30 @@ Generated data, caches, logs, and virtual environments are excluded from Git.
 6. Evaluate clutter, occlusion, held-out assets/layouts, and real-image transfer.
 
 See [the design notes](docs/design.md) for scene organization and evaluation rules.
+
+## Public gallery and moving-camera previews
+
+The default furnished configs now contain eight camera views per room. A separate
+visualization path moves the camera smoothly around an ellipse at 1.95 m height,
+with 96 poses and geometry-derived overlays at every pose:
+
+```bash
+.venv/bin/python scripts/prepare_motion_configs.py
+./installation/run_python.sh scripts/render_furnished.py \
+  --configs artifacts/motion-configs/*.json --output vis/walkthrough
+.venv/bin/python scripts/make_walkthrough_media.py vis/walkthrough /path/to/public/media
+```
+
+The motion preset renders at 768 × 512 with 32 samples per pixel. The compositor
+adds a synchronized top-down marker and exports an 8-second MP4/GIF loop at 12 fps;
+FFmpeg must be on `PATH`. This is a moving virtual camera, not a simulated robot
+trajectory or a collision-validated navigation path.
+
+To export compressed still previews and selected scene JSON for a website:
+
+```bash
+.venv/bin/python scripts/export_web_gallery.py vis/showcase /path/to/public/media
+```
+
+Exporting to a website is an explicit publication step. The full `vis/` captures,
+USD scenes, depth arrays, and downloaded assets remain ignored in this repository.

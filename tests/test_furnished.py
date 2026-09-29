@@ -23,7 +23,7 @@ class FurnishedTests(unittest.TestCase):
                 _, second = load_scene(path)
                 self.assertEqual(first, second)
                 self.assertGreaterEqual(len({p.object_id for p in first}), 15)
-                self.assertEqual(len(config["cameras"]), 3)
+                self.assertEqual(len(config["cameras"]), 8)
                 self.assertTrue(all(p.center[2] > 0 for p in first))
 
     def test_unknown_recipe_rejected(self):

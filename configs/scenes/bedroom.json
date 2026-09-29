@@ -232,6 +232,76 @@
         1.0
       ],
       "focal_length_mm": 15
+    },
+    {
+      "id": "C4",
+      "position": [
+        -2.5,
+        1.75,
+        1.85
+      ],
+      "target": [
+        0.8,
+        -1,
+        0.9
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C5",
+      "position": [
+        2.5,
+        -1.9,
+        1.9
+      ],
+      "target": [
+        -0.7,
+        0.8,
+        1
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C6",
+      "position": [
+        0,
+        2.05,
+        1.85
+      ],
+      "target": [
+        -0.4,
+        -1.2,
+        0.9
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C7",
+      "position": [
+        -2.6,
+        0,
+        1.85
+      ],
+      "target": [
+        0.8,
+        0.2,
+        1
+      ],
+      "focal_length_mm": 15
+    },
+    {
+      "id": "C8",
+      "position": [
+        2.5,
+        1.8,
+        1.95
+      ],
+      "target": [
+        -0.5,
+        -1.2,
+        0.9
+      ],
+      "focal_length_mm": 15
     }
   ],
   "lighting": {

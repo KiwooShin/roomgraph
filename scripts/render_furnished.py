@@ -329,6 +329,11 @@ def main():
                 annotator.detach(product)
             product.destroy()
             print(f"COMPLETE: {name} ({manifest['object_count']} objects)", flush=True)
+    except Exception:
+        import traceback
+
+        traceback.print_exc()
+        raise
     finally:
         app.close()
 

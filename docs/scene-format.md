@@ -30,7 +30,7 @@ The seed controls procedural detail. Asset overrides replace selected procedural
 objects with textured models; the asset catalog records provenance and checksums.
 
 Each camera has an ID, position, target, and focal length. The top-down triangle
-points along the normalized XY projection of target minus position. Labels C1–C3
+points along the normalized XY projection of target minus position. Labels C1–C8
 match the perspective views. The triangle indicates direction, not an exact
 field-of-view footprint. The ceiling is hidden only for the top-down image.
 

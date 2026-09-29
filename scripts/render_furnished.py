@@ -32,7 +32,14 @@ def main():
         from pxr import Gf, UsdGeom, UsdLux
 
         from roomgraph.furnishings import Part
-        from roomgraph.geometry import depth_edge_masks, look_at, scaled_room
+        from roomgraph.geometry import depth_edge_masks, scaled_room
+        from roomgraph.headcam import (
+            HEAD_PART_NAMES,
+            camera_rig_pose,
+            proxy_parts,
+            resolve_camera_pose,
+            robot_pose,
+        )
         from roomgraph.scene_config import compiled_manifest, load_scene
         from roomgraph.usd_furnishing import SceneBuilder
         from roomgraph.visualization import camera_triangle, floorplan_pixel
@@ -158,9 +165,8 @@ def main():
                 )
 
             robot_transform = None
+            head_transform = None
             if config.get("headcam", {}).get("enabled", False):
-                from roomgraph.headcam import proxy_parts, robot_pose
-
                 builder.material(
                     "robot_shell",
                     (0.60, 0.56, 0.48),
@@ -171,8 +177,13 @@ def main():
                 builder.material("robot_dark", (0.025, 0.028, 0.03), 0.5)
                 root = UsdGeom.Xform.Define(stage, "/World/Robot")
                 robot_transform = root.AddTransformOp()
+                head_root = UsdGeom.Xform.Define(stage, "/World/Robot/HeadRig")
+                head_transform = head_root.AddTransformOp()
                 for part in proxy_parts(config["headcam"].get("arm_reach_m", 0.52)):
-                    builder.part(part, root="/World/Robot")
+                    part_root = (
+                        "/World/Robot/HeadRig" if part.name in HEAD_PART_NAMES else "/World/Robot"
+                    )
+                    builder.part(part, root=part_root)
                 add_update_semantics(root.GetPrim(), "robot")
 
             dome = UsdLux.DomeLight.Define(stage, "/World/Lights/Sky")
@@ -222,10 +233,14 @@ def main():
                 camera.CreateFocalLengthAttr(focal)
                 camera.CreateHorizontalApertureAttr(24)
                 camera.CreateVerticalApertureAttr(24 * height / width)
-                pose = look_at(view["position"], view["target"])
+                rig = camera_rig_pose(view)
+                pose = resolve_camera_pose(view)
                 transform.Set(Gf.Matrix4d((pose @ np.diag([1, -1, -1, 1])).T.tolist()))
                 if robot_transform is not None:
-                    robot_transform.Set(Gf.Matrix4d(robot_pose(pose).T.tolist()))
+                    body_pose = rig.base_to_world if rig is not None else robot_pose(pose)
+                    head_pose = rig.head_to_base if rig is not None else np.eye(4)
+                    robot_transform.Set(Gf.Matrix4d(body_pose.T.tolist()))
+                    head_transform.Set(Gf.Matrix4d(head_pose.T.tolist()))
                 for _ in range(2):
                     rep.orchestrator.step(rt_subframes=4)
                 rgb = np.asarray(annotators["rgb"].get_data())[..., :3].copy()
@@ -269,6 +284,14 @@ def main():
                         **view,
                         "stem": stem,
                         "camera_to_world": pose.tolist(),
+                        **(
+                            {
+                                "robot_base_to_world": rig.base_to_world.tolist(),
+                                "head_to_base": rig.head_to_base.tolist(),
+                            }
+                            if rig is not None
+                            else {}
+                        ),
                         "intrinsics": intrinsics.tolist(),
                         "capture_seconds": time.monotonic() - started,
                         "visible_pixels": int(np.count_nonzero(visible)),
@@ -314,7 +337,13 @@ def main():
 
             triangles = []
             for view in config["cameras"]:
-                origin, direction, vertices = camera_triangle(view["position"], view["target"])
+                pose = resolve_camera_pose(view)
+                eye, forward = pose[:3, 3], pose[:3, 2].copy()
+                if np.linalg.norm(forward[:2]) < 1e-8:
+                    # A vertical optical axis has no floor-plane direction.
+                    # Display the head's yaw heading in that singular case.
+                    forward = np.cross([0, 0, 1], pose[:3, 0])
+                origin, direction, vertices = camera_triangle(eye, eye + forward)
                 coords = [pixel(v) for v in vertices]
                 draw.polygon(coords, fill="#ffbc59", outline="#181b24", width=3)
                 label = pixel(origin - direction * 0.37)
@@ -333,6 +362,7 @@ def main():
                         "origin_xy": origin.tolist(),
                         "direction_xy": direction.tolist(),
                         "vertices_xy": [v.tolist() for v in vertices],
+                        "head_heading_if_vertical": bool(abs(pose[2, 2]) > 1 - 1e-8),
                     }
                 )
             marked.save(output / "top_down_cameras.png")

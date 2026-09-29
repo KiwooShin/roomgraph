@@ -1,0 +1,24 @@
+{
+  "bootstrap_manifest": "vis/benchmark_headcam/office_04/manifest.json",
+  "bootstrap_views": ["C00", "C08", "C16"],
+  "checkpoint": "artifacts/runs/headcam_v1/best.pt",
+  "capture_name": "office_04_active_head",
+  "robot_base": {"position": [1.2, 0.0, 0.0], "yaw_deg": 90.0},
+  "yaw_grid_deg": [-80, -40, 0, 40, 80],
+  "pitch_grid_deg": [-30, 0, 30],
+  "focal_length_mm": 14.0,
+  "render": {"width": 576, "height": 384, "samples_per_pixel": 16},
+  "network_size": [384, 256],
+  "threshold": 0.7,
+  "action_budget_s": 12.0,
+  "planning_horizon_s": 3.0,
+  "motion_limits": {
+    "yaw_bounds": [-80, 80],
+    "pitch_bounds": [-35, 30],
+    "speed_deg_s": [60, 45],
+    "accel_deg_s2": [120, 90],
+    "settle_s": 0.15
+  },
+  "random_seeds": [7, 17, 27, 37, 47],
+  "note": "Development-room pilot. Head limits are illustrative simulation assumptions, not official 1X specifications. Known metric camera poses and translated bootstrap views are provided."
+}

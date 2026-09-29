@@ -55,3 +55,13 @@ This separation gives us a practical foundation for future dataset generation:
 version-controlled inputs, explicit assets, and capture manifests. Later versions
 can add building layouts, collision/accessibility checks, asset variation, and
 train/validation/test splits by building rather than by image.
+
+## Articulated head cameras
+
+A camera can specify `robot_base: {position: [x, y, z], yaw_deg: 90}` and
+`head: {yaw_deg: 0, pitch_deg: 30}` instead of `position` and `target`. Both rig
+fields must be present and `headcam.enabled` must be true. The loader derives
+authoritative optical position/target; only the head, visor, and lenses turn.
+Positive yaw turns left and positive pitch looks up. The body/arms stay fixed.
+These proxy transforms are not official 1X calibration or motion limits.
+See [active-head conventions](active-head-experiment.md).

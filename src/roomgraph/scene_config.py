@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 
 from roomgraph.furnishings import Furnisher, kitchen
+from roomgraph.headcam import camera_rig_pose
 
 RECIPES = {
     "object",
@@ -46,6 +47,15 @@ def load_scene(path: Path):
         raise ValueError("The original room template has fixed dimensions")
     seen = set()
     for camera in config["cameras"]:
+        rig = camera_rig_pose(camera)
+        if rig is not None:
+            if not config.get("headcam", {}).get("enabled", False):
+                raise ValueError("Articulated cameras require headcam.enabled")
+            # Rig parameters are authoritative. Derived optical positions also
+            # support existing floor-plan and dataset consumers of scene.json.
+            pose = rig.camera_to_world
+            camera["position"] = pose[:3, 3].tolist()
+            camera["target"] = (pose[:3, 3] + pose[:3, 2]).tolist()
         eye, target = np.asarray(camera["position"]), np.asarray(camera["target"])
         if eye.shape != (3,) or target.shape != (3,) or not np.isfinite([eye, target]).all():
             raise ValueError("Camera poses must contain three finite coordinates")
@@ -57,7 +67,8 @@ def load_scene(path: Path):
             and 0 < eye[2] < dimensions[2]
         ):
             raise ValueError(f"Camera {camera['id']} is outside the room")
-        if camera["id"] in seen or camera["focal_length_mm"] <= 0:
+        focal = camera["focal_length_mm"]
+        if camera["id"] in seen or not np.isfinite(focal) or focal <= 0:
             raise ValueError("Camera IDs must be unique and focal lengths positive")
         seen.add(camera["id"])
     for name in ("width", "height", "samples_per_pixel"):

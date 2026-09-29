@@ -173,3 +173,16 @@ See [pipeline and commands](docs/perception.md),
 [training configuration](configs/training/headcam_v1.json).
 The local gallery is `vis/perception/report.html`; training logs and checkpoints
 are in `artifacts/runs/headcam_v1/`. All generated data and checkpoints stay local.
+
+## Active head-camera pilot
+
+The robot proxy can now turn its head independently of its body. A causal
+three-second view planner tracks unseen directions and image-supported shell
+hypotheses, then chooses the next head target. The local report combines furnished
+RGB/edge overlays, top-down head direction, evidence maps, and comparisons with
+a fixed scan and random trajectories.
+
+See [the experiment protocol and limitations](docs/active-head-experiment.md).
+The generated report is `vis/active_head/report/report.html`; all raw
+visualizations stay local. This is a validation-room prototype with known poses
+and translated bootstrap views, not autonomous navigation.

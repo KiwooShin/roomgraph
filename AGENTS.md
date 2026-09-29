@@ -19,6 +19,10 @@ Python, meaningful unit tests, and useful visualizations.
 - Run Ruff and meaningful unit tests with the learning environment when changing
   the trainer. The lightweight `.venv` may skip tests without PyTorch; use the
   host CUDA-enabled Python for the full learning suite.
+- For active-view experiments, expose only acquired RGB predictions and calibration
+  to the policy. Keep future frames and renderer ground truth behind the evaluator
+  boundary; record motion budgets separately from compute latency. Archive frozen
+  predictions and verify replay consistency before comparing camera policies.
 - Report synthetic-pilot limitations honestly. A hidden predicted wall is a
   structural hypothesis, not verified free space for robot navigation.
 

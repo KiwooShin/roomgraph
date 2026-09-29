@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoomGraph · Capture inspection</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b111b;color:#e7eff8;font:16px system-ui,sans-serif}
+main{max-width:1440px;margin:auto;padding:40px 28px}header{border-bottom:1px solid #273243;padding-bottom:24px}
+.eyebrow{color:#45dec4;font-size:12px;letter-spacing:.2em}h1{font-size:44px;letter-spacing:-.04em;margin:12px 0}
+p,small,figcaption{color:#9db0c6}p{max-width:850px;line-height:1.7}h2{font-size:19px;font-weight:550}
+small{font-size:13px;margin-left:16px}section{margin-top:32px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+figure{margin:0;background:#141e2c;border:1px solid #273243;border-radius:10px;overflow:hidden}
+img{width:100%;display:block}figcaption{padding:12px;font-size:13px}
+canvas{display:block;width:100%;height:400px;background:#101a28;border:1px solid #273243;border-radius:12px;touch-action:none}
+.legend{display:flex;gap:22px;margin:12px 0;font-size:13px}.legend span:first-child{color:#45dec4}.legend span:nth-child(2){color:#f3ae68}
+footer{margin-top:40px;border-top:1px solid #273243;padding-top:20px;color:#9db0c6;font-size:13px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}h1{font-size:32px}small{display:block;margin:6px 0}}
+</style>
+<main>
+<header><div class="eyebrow">ROOMGRAPH / ISAAC SIM / GEOMETRY VALIDATION</div>
+<h1>From pixels to room structure.</h1>
+<p>A calibrated empty-room capture with a doorway and window opening. Turquoise overlays show
+visible architectural edges derived from geometry. Depth is checked independently against ray intersections.</p></header>
+<section><h2>Structural graph <small>Drag to orbit · scroll to zoom</small></h2>
+<canvas id="scene"></canvas><div class="legend"><span>● Architecture</span><span>● Camera poses</span></div></section>
+__VIEW_ROWS__
+<footer>World: metres, Z up. Cameras: X right, Y down, Z forward. Labels describe the inner building shell.
+This capture validates rendering and calibration; it contains no learned predictions.</footer>
+</main>
+<script>
+const scene=__SCENE_JSON__;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+let yaw=-.65,pitch=.55,zoom=42,drag=null;
+function draw(){
+ const dpr=window.devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;
+ canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+ function project(p){const x=p[0],y=p[1],z=p[2]-1.5;
+  const u=Math.cos(yaw)*x-Math.sin(yaw)*y,v=Math.sin(yaw)*x+Math.cos(yaw)*y;
+  return [w/2+zoom*u,h/2-zoom*(Math.cos(pitch)*z-Math.sin(pitch)*v)];}
+ function line(a,b,color,width=1){a=project(a);b=project(b);ctx.strokeStyle=color;ctx.lineWidth=width;
+  ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();}
+ for(let i=-4;i<=4;i++){line([i,-4,0],[i,4,0],'#203044');line([-4,i,0],[4,i,0],'#203044');}
+ for(const edge of scene.edges)line(edge.start,edge.end,'#45dec4',2);
+ scene.views.forEach((v,i)=>{const m=v.camera_to_world,p=m.slice(0,3).map(r=>r[3]),q=project(p);
+  const end=p.map((x,j)=>x+m[j][2]*.8);line(p,end,'#f3ae68',2);
+  ctx.fillStyle='#f3ae68';ctx.beginPath();ctx.arc(q[0],q[1],5,0,2*Math.PI);ctx.fill();
+  ctx.font='12px system-ui';ctx.fillText('C'+i,q[0]+8,q[1]-6);});
+}
+canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)};
+canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;
+ pitch=Math.max(-1.4,Math.min(1.4,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY];draw()};
+canvas.onpointerup=()=>drag=null;canvas.onpointercancel=()=>drag=null;
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(15,Math.min(100,zoom*Math.exp(-e.deltaY*.001)));draw()},{passive:false});
+window.addEventListener('resize',draw);draw();
+</script>
+</html>

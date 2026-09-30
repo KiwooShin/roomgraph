@@ -1,0 +1,26 @@
+{
+  "name": "arkitscenes_42445021_zero_shot_upright_v2",
+  "upright": true,
+  "video": "42445021",
+  "split": "Validation",
+  "frames": 240,
+  "checkpoint": "artifacts/runs/headcam_v1/best.pt",
+  "network_size": [384, 256],
+  "threshold": 0.7,
+  "voxel_size_m": 0.05,
+  "reference_stride": 16,
+  "reference_exclusion_s": 0.05,
+  "surface_stride": 3,
+  "seeds": [11, 23, 37],
+  "variants": {
+    "nominal": {},
+    "jitter_2cm_1deg": {"translation_std_m": 0.02, "rotation_std_deg": 1},
+    "jitter_5cm_3deg": {"translation_std_m": 0.05, "rotation_std_deg": 3},
+    "drift_10cm_3deg": {"drift_translation_m": 0.1, "drift_rotation_deg": 3},
+    "focal_plus2pct": {"focal_bias_fraction": 0.02},
+    "principal_plus2px": {"principal_bias_px": 2},
+    "depth_plus2pct": {"depth_scale_fraction": 0.02},
+    "time_plus50ms": {"time_offset_s": 0.05}
+  },
+  "protocol": "One development sequence; frozen synthetic model and threshold; no fine-tuning. References are evaluator-only. Nominal ARKit poses are estimates, not ground truth. Three seeds for random jitter; deterministic biases run once."
+}

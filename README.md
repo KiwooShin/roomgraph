@@ -227,3 +227,81 @@ policy remains the default. The experimental adapter is
 `vis/space_suite/policy_comparison/report.html`. Inspect both policies' paths,
 overlays and observed maps in the
 [published policy comparison](https://kiwooshin.github.io/roomgraph-spaces/#policy-comparison).
+
+## Real RGB-D pilot: ARKitScenes
+
+The first real-data experiment uses ARKitScenes validation video `42445021`,
+visit `421380`: 240 chronologically sampled input views, the frozen synthetic
+EdgeNet checkpoint, measured mobile depth, confidence maps and estimated camera
+poses. It does not retrain the model or tune its 0.7 threshold. This is one
+development capture, not a held-out real-world benchmark.
+
+```bash
+python scripts/download_arkitscenes.py
+PYTHONPATH=src python scripts/run_arkitscenes.py
+PYTHONPATH=src CUDA_VISIBLE_DEVICES='' python scripts/check_arkitscenes_replay.py
+PYTHONPATH=src CUDA_VISIBLE_DEVICES='' python scripts/make_arkitscenes_report.py
+```
+
+Raw assets live under ignored `artifacts/real/arkitscenes/`. The self-contained
+local report is `vis/arkitscenes/pilot_v2/report/report.html`, with a 48-second
+recorded-camera replay, four rows of top-down + four overlays, interactive point
+maps, and all error cases. The top-down video background is the final observed
+map; its triangle and highlighted path show the recorded camera movement.
+
+The adapter inverts ARKitScenes' world-to-camera axis-angle poses, interpolates
+camera centers and rotations without extrapolation, converts millimeters to
+meters, and normalizes image orientation using `sky_direction`. Calibration and
+camera basis rotate together; tests verify unchanged 3D rays. RGB preprocessing
+retains the existing model's anisotropic 384×256 resize with matching intrinsics.
+No synthetic robot self-mask, assumed floor height, or rectangular-room fit is
+applied. The earlier `pilot_v1` raw-orientation diagnostic and its source snapshot
+remain local; it is superseded for model interpretation by the upright run.
+
+The evaluator alone reads 139 laser-derived reference-depth images. Input
+timestamps within 50 ms of those views are excluded. Reference points use nominal
+ARKit calibration/poses for world placement; these poses are estimates, and the
+reference is an incomplete set of surfaces. Thus the following are **surface
+agreement scores against the available reference subset**, not independent
+survey accuracy, architectural-edge accuracy, or whole-scene completeness.
+Correct surfaces outside reference coverage can lower precision.
+
+| Error condition | All valid depth: F1 at 10 cm | Confidence + multi-view: F1 at 10 cm |
+| --- | ---: | ---: |
+| Supplied calibration/poses | 67.24% | 86.42% |
+| 2 cm / 1° independent pose jitter | 69.55% | 85.71% |
+| 5 cm / 3° independent pose jitter | 56.10% | 74.74% |
+
+Jitter standard deviations are per axis, averaged over three declared seeds.
+The suite also tests a gradual 10 cm / 3° drift, +2% focal length, +2 pixel
+principal point, +2% depth scale, and +50 ms pose timestamp offset. These are
+illustrative sensitivity conditions, not measured 1X sensor specifications.
+Some small biases improve this limited reference-agreement score; that is not
+evidence that deliberately miscalibrating a camera improves actual geometry.
+
+The conservative branch keeps high-confidence depth, requires surface support
+from at least two images, and requires structural edges to have two images and
+camera centers separated by at least 20 cm. At nominal poses it raises reference
+precision from 50.72% to 76.96%, while reference recall falls from 99.68% to
+98.53%. It retains only 226 of 3,427 learned edge voxels. There are no typed
+architectural-edge labels here, so this does not establish improved edge accuracy.
+Support counts and model confidence are not calibrated geometric uncertainty.
+
+Inference runs once; all 24 fusion variants reuse its cached probabilities.
+The complete experiment took 108.27 seconds, including preparation, inference,
+reference construction and scoring, excluding download and media generation.
+Median model-forward time was 7.66 ms. Exact CPU replay reproduced 24 arrays
+across three selected maps, including a severe-jitter case.
+
+Confidence filtering cannot repair systematic drift or calibration bias. Next
+steps are robust overlapping-frame pose refinement with pose priors, loop-closure
+validation, and re-fusion from original observations after corrections. Calibration
+and time-offset refinement need sufficiently varied motion and constrained priors;
+flat walls alone cannot constrain every parameter. Evaluate correction against
+independent reference data before adoption. The RGB-only model does not consume
+camera poses, so pose-noise augmentation alone cannot fix its 3D postprocessing.
+
+Data and format sources: [ARKitScenes](https://github.com/apple-aiml-research/ARKitScenes),
+[raw assets](https://github.com/apple-aiml-research/ARKitScenes/blob/main/raw/README.md),
+[dataset license](https://github.com/apple-aiml-research/ARKitScenes/blob/main/LICENSE).
+Follow dataset attribution and usage terms; downloaded assets remain local.

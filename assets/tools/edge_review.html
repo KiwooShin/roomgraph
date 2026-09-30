@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoomGraph edge review</title><style>body{font:16px system-ui;background:#101820;color:#eee;margin:24px}button,select,input{margin:6px;padding:8px}canvas{width:384px;max-width:100%;touch-action:none;border:1px solid #8794a4}p{max-width:800px}a{color:#6ed}#state{white-space:pre-wrap;overflow-wrap:anywhere}</style>
+<h1>Structural edge review</h1><p>Load annotations.json from this folder. Images contain no model predictions, to reduce annotation bias. Mark visible architectural boundaries only: wall intersections, door openings, and window openings; exclude furniture and texture. Do not draw hidden boundaries.</p>
+<input id="file" type="file" accept=".json"><button id="previous">Previous</button><button id="next">Next</button><select id="kind"><option>wall_wall</option><option>wall_floor</option><option>wall_ceiling</option><option>door</option><option>window</option></select>
+<p>Click endpoints to draw a polyline, then Finish line. To limit evaluation to an unambiguous region, choose Region and click its two corners. Every visible structural edge inside each reviewed rectangle must be labeled. Unreviewed pixels are ignored.</p>
+<button id="finish">Finish line</button><button id="region">Region</button><button id="undo">Undo line</button><button id="clear">Clear regions</button><button id="full">Review entire image</button><br>
+<canvas id="canvas" width="192" height="256"></canvas><pre id="state">Load the annotation JSON to begin.</pre>
+<label>Reviewer <input id="reviewer" placeholder="Name or identifier"></label><button id="approve">Mark human-reviewed</button><button id="save">Export JSON</button><p>Export after changes. No labels are sent to a server. Save the JSON locally; reviewing does not modify the frozen model or train it.</p>
+<script>
+let data=null,index=0,pending=[],regionMode=false;const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),picture=new Image();
+const el=id=>document.getElementById(id),frame=()=>data.frames[index];
+function draw(){ctx.clearRect(0,0,192,256);if(picture.complete&&picture.naturalWidth)ctx.drawImage(picture,0,0,192,256);if(!data)return;ctx.lineWidth=1;ctx.strokeStyle='#facc15';for(const r of frame().review_regions)ctx.strokeRect(r[0],r[1],r[2]-r[0],r[3]-r[1]);for(const line of [...frame().polylines,{points:pending}]){ctx.strokeStyle='#ff4cc4';ctx.beginPath();line.points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.stroke();}el('state').textContent=`${index+1}/${data.frames.length} ${frame().id}\n${frame().status}; ${frame().polylines.length} lines; ${frame().review_regions.length} regions${regionMode?' — selecting region':''}`;}
+function load(){pending=[];regionMode=false;picture.src=frame().id+'.png';picture.onload=draw;draw();}
+function changed(){frame().status='draft';delete frame().reviewer;}
+el('file').onchange=async e=>{try{data=JSON.parse(await e.target.files[0].text());if(!Array.isArray(data.frames)||!data.frames.length)throw Error('Missing frames');index=0;load();}catch(error){alert(error.message);data=null;}};
+canvas.onclick=e=>{if(!data)return;const r=canvas.getBoundingClientRect(),p=[Math.max(0,Math.min(191,Math.round((e.clientX-r.left)*192/r.width))),Math.max(0,Math.min(255,Math.round((e.clientY-r.top)*256/r.height)))];pending.push(p);if(regionMode&&pending.length===2){const [a,b]=pending;const box=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0])+1,Math.max(a[1],b[1])+1];frame().review_regions.push(box);pending=[];regionMode=false;changed();}draw();};
+el('finish').onclick=()=>{if(!data||regionMode||pending.length<2)return;frame().polylines.push({type:el('kind').value,points:pending});pending=[];changed();draw();};
+el('region').onclick=()=>{pending=[];regionMode=true;draw();};
+el('undo').onclick=()=>{if(!data)return;pending=[];frame().polylines.pop();changed();draw();};
+el('clear').onclick=()=>{if(!data)return;frame().review_regions=[];changed();draw();};
+el('full').onclick=()=>{if(!data)return;frame().review_regions=[[0,0,192,256]];changed();draw();};
+el('previous').onclick=()=>{if(data){index=Math.max(0,index-1);load();}};el('next').onclick=()=>{if(data){index=Math.min(data.frames.length-1,index+1);load();}};
+el('approve').onclick=()=>{if(!data)return;if(!el('reviewer').value.trim()||!frame().review_regions.length||pending.length){alert('Provide reviewer, finish pending line and define reviewed region(s).');return;}frame().status='human_reviewed';frame().reviewer=el('reviewer').value.trim();frame().reviewed_at=new Date().toISOString();draw();};
+el('save').onclick=()=>{if(!data)return;const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='annotations.reviewed.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+</script></html>

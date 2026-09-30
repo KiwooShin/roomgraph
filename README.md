@@ -305,3 +305,10 @@ Data and format sources: [ARKitScenes](https://github.com/apple-aiml-research/AR
 [raw assets](https://github.com/apple-aiml-research/ARKitScenes/blob/main/raw/README.md),
 [dataset license](https://github.com/apple-aiml-research/ARKitScenes/blob/main/LICENSE).
 Follow dataset attribution and usage terms; downloaded assets remain local.
+
+### Real-image preprocessing comparison
+
+The frozen model now has a [same-view preprocessing diagnostic](docs/real-edge-preprocessing.md):
+240 ARKitScenes views, 121 exact VGA matches, five input strategies, and a local
+annotation review tool. Results remain qualitative until independently reviewed
+structural-edge labels are available; no real-edge accuracy improvement is claimed.

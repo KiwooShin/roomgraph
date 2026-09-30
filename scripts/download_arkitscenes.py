@@ -40,13 +40,19 @@ def main():
     parser.add_argument("--video", default="42445021")
     parser.add_argument("--split", choices=["Training", "Validation"], default="Validation")
     parser.add_argument("--output", type=Path, default=Path("artifacts/real/arkitscenes"))
+    parser.add_argument(
+        "--assets",
+        nargs="+",
+        default=list(ASSETS),
+        choices=[*ASSETS, "vga_wide.zip", "vga_wide_intrinsics.zip"],
+    )
     args = parser.parse_args()
     if not args.video.isdigit():
         parser.error("Video ID must contain digits only")
     root = args.output / args.split / args.video
     previous = root / "download_receipt.json"
     receipt = json.loads(previous.read_text()) if previous.exists() else {}
-    for asset in ASSETS:
+    for asset in args.assets:
         target = root / asset
         print(f"Downloading/checking {asset}", flush=True)
         record = download(f"{BASE}/{args.split}/{args.video}/{asset}", target)

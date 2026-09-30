@@ -218,3 +218,12 @@ Room entry, observed edge visibility and learned reconstruction completeness are
 reported separately, including cases that stop with unseen rooms or structure.
 The [public comparison page](https://kiwooshin.github.io/roomgraph-spaces/) contains
 selected moving-camera replays and interactive observed 3D maps.
+
+A controlled follow-up tests bounded frontier-goal persistence with the same
+layouts, checkpoint and 300-image budgets. It still enters 13 of 16 rooms, while
+macro 3D completeness falls from 43.98% to 42.42% at 10 cm tolerance. The original
+policy remains the default. The experimental adapter is
+`scripts/run_space_suite_v2.py`; its paired report is
+`vis/space_suite/policy_comparison/report.html`. Inspect both policies' paths,
+overlays and observed maps in the
+[published policy comparison](https://kiwooshin.github.io/roomgraph-spaces/#policy-comparison).

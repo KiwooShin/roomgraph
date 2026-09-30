@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "name": "space_suite_v2",
+  "title": "Bounded frontier commitment on four furnished development cases",
+  "base_experiment": "configs/experiments/multiroom_v1.json",
+  "checkpoint": "artifacts/runs/headcam_v1/best.pt",
+  "shared_budget": {
+    "max_frames": 300,
+    "max_stations": 32
+  },
+  "protocol": {
+    "split": "development",
+    "selection": "Policy refined after observing the v1 development cases; identical layouts, starts, model, sensors and frame/station budgets. This is a paired development comparison, not a held-out generalization claim.",
+    "reference_boundary": "Building geometry and region labels are renderer/evaluator inputs, never planner inputs.",
+    "fixed_components": [
+      "checkpoint",
+      "RGB-D and known-pose sensors",
+      "baseline frontier score and head scan schedule",
+      "mapping parameters",
+      "render dimensions and samples",
+      "frame and station budgets"
+    ],
+    "changed_component": "bounded frontier goal commitment"
+  },
+  "cases": [
+    {
+      "id": "residential_branch",
+      "title": "Branching home: four furnished rooms around a central corridor",
+      "building": "configs/buildings/cases/residential_branch.json",
+      "split": "development",
+      "start_position": [
+        -3,
+        1.0,
+        0
+      ],
+      "initial_body_yaw_deg": 180,
+      "description": "Branching corridor with living room, kitchen, bedroom and study; two choices on each side of the hall."
+    },
+    {
+      "id": "loop_workspaces",
+      "title": "Loop-connected studio, dining room, lounge and workshop",
+      "building": "configs/buildings/cases/loop_workspaces.json",
+      "split": "development",
+      "start_position": [
+        -2.8,
+        1.15,
+        0
+      ],
+      "initial_body_yaw_deg": 0,
+      "description": "Four physically partitioned work and living spaces form a loop, allowing a revisit by a different route."
+    },
+    {
+      "id": "open_office",
+      "title": "Open office with meeting room, break room and quiet office",
+      "building": "configs/buildings/cases/open_office.json",
+      "split": "development",
+      "start_position": [
+        -0.7,
+        -1.7,
+        0
+      ],
+      "initial_body_yaw_deg": 0,
+      "description": "A single 54 square metre open office connects to three smaller side rooms; desk groups do not invent reference room boundaries."
+    },
+    {
+      "id": "compact_apartment",
+      "title": "Compact furnished apartment with narrow central hall",
+      "building": "configs/buildings/cases/compact_apartment.json",
+      "split": "development",
+      "start_position": [
+        -2.1,
+        0.9,
+        0
+      ],
+      "initial_body_yaw_deg": -90,
+      "description": "A dense 56 square metre apartment with a 1.7 metre corridor and 1.4 metre physical door openings."
+    }
+  ],
+  "exploration_policy": {
+    "id": "frontier_commitment_v2",
+    "settings": {
+      "goal_tolerance_m": 0.3,
+      "frontier_match_radius_m": 0.8,
+      "max_commit_steps": 8,
+      "minimum_progress_m": 0.1,
+      "stagnation_steps": 2
+    }
+  },
+  "comparison": {
+    "baseline_suite": "configs/experiments/space_suite_v1.json",
+    "baseline_output": "vis/space_suite/v1",
+    "change": "Bounded commitment to a selected reachable frontier goal; unchanged scans, mapping, initial frontier scoring, model and sensors."
+  }
+}

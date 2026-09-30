@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VISUAL_AUDIT = {
     "compact_apartment": {
         "status": "inspected_with_scene_defect",
+        "experiment_sha256": "d85a2ffd36262931b4263a477a1b59911e6ae74787435a04be148bc7033747a4",
         "observed_frames": ["F0004", "F0036"],
         "findings": [
             "Imported living-room plant foliage intersects the sofa arm/cushion. "
@@ -47,6 +48,12 @@ def sha256(path):
 
 def read_json(path, default=None):
     return json.loads(path.read_text()) if path.is_file() else default
+
+
+def matching_visual_audit(case_id, experiment_sha256):
+    """Manual frame inspection applies only to the exact inspected acquisition."""
+    audit = VISUAL_AUDIT.get(case_id)
+    return audit if audit and audit["experiment_sha256"] == experiment_sha256 else None
 
 
 def frozen_suite(suite_path, output_root):
@@ -98,7 +105,7 @@ def load_case(spec, root):
         "available_artifacts": artifacts,
         "media_sha256": {name: sha256(directory / "report" / name) for name in artifacts},
         "receipt_sha256": sha256(directory / "receipt.json") if receipt else None,
-        "visual_audit": VISUAL_AUDIT.get(spec["id"]),
+        "visual_audit": None,
     }
     evaluation_path = directory / "run/evaluation.json"
     experiment_path = directory / "run/experiment.json"
@@ -122,6 +129,9 @@ def load_case(spec, root):
     result.update(
         {
             "evaluated": True,
+            "visual_audit": matching_visual_audit(
+                spec["id"], evaluation["provenance"]["experiment_sha256"]
+            ),
             "experiment_status": experiment["status"],
             "reference_edge_length_m": length,
             "reference_portal_count": len(read_json(reference_path)["portals"]),

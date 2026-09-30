@@ -63,6 +63,17 @@ class SpaceSuiteReportTests(unittest.TestCase):
         self.assertFalse(case["evaluated"])
         self.assertNotIn("metrics", case)
 
+    def test_manual_inspection_does_not_transfer_to_another_policy_run(self):
+        original = report.VISUAL_AUDIT["compact_apartment"]
+        self.assertEqual(
+            report.matching_visual_audit("compact_apartment", original["experiment_sha256"]),
+            original,
+        )
+        self.assertIsNone(report.matching_visual_audit("compact_apartment", "another-run"))
+        self.assertIsNone(
+            report.matching_visual_audit("another-case", original["experiment_sha256"])
+        )
+
     def test_display_declaration_must_match_frozen_suite_bytes(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

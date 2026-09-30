@@ -163,3 +163,125 @@ Full local reports
 are in `vis/space_suite/report/report.html` and each case's `report/report.html`.
 The [public comparison](https://kiwooshin.github.io/roomgraph-spaces/) contains
 selected media, interactive observed maps and denominator-aware aggregates.
+
+## Follow-up: persistent exploration goals
+
+The first suite exposed goal changes before arrival, despite paths that remained
+safe in the acquired maps. In the office, station 7 selected a break-room frontier
+5.4 m away and station 8 abandoned it after one 0.85 m movement. Its corresponding
+frontier had shifted only 0.30 m and was still reachable. In the apartment,
+station 16 returned to the exact position of station 10 and acquired ten images
+that added no new surface voxels. The apartment spent 118 of 300 images at stations
+adding fewer than 500 surface voxels each. These are recorded diagnostic findings,
+not a counterfactual estimate of a different policy's performance.
+
+The follow-up changes only frontier-goal persistence. A selected goal may remain
+active across several short movements, while its path is recalculated against the
+latest observed map. Arrival, blocked paths, loss of a spatially matching frontier,
+stalled progress or a bounded commitment duration release it. The trace calls a
+lost frontier match `resolved`; this does not certify a completed region. New
+goals use the original frontier scoring rule. Head sweeps, mapping, footprint,
+checkpoint, rendering,
+starts and image/station budgets remain unchanged. No supplied room labels or
+door destinations enter this policy.
+
+Versioned runtime, replay and suite adapters leave the published baseline's
+source files and captures intact. A fresh suite goes under `vis/space_suite/v2`.
+The policy settings and sources are frozen before acquisition; independent replay
+must reconstruct both its stateful decisions and all observed maps. Compare every
+case, including regressions, against the recorded first suite. This is a refinement
+tuned from these development cases, not an unseen-building generalization test.
+
+This comparison uses fresh captures with the same renderer settings, not identical
+RGB tensors. For the branching home's initial 12 views, requests and depth-file
+hashes matched v1 exactly, while RGB mean absolute difference was 0.31 intensity
+levels on the 0–255 scale. Model probability mean absolute difference was 0.000323.
+Within-run replay uses archived probabilities; between-policy model scores can
+also reflect this small rendering variation. A single run per layout and policy
+does not estimate statistical significance.
+
+The initial 32 requested views also matched between the two branching-home runs,
+and the first three station occupancy arrays were identical. The first different
+goal choice occurred on these matching acquired maps. This supports attributing
+the initial planning divergence to the policy change, while the reconstruction
+scores still include rendering and inference variation. The full image/depth
+audit remains local at
+`vis/space_suite/v2/residential_branch_initial_view_audit.json`.
+
+The [v2 suite declaration](../configs/experiments/space_suite_v2.json) records the
+fixed policy settings. Run the follow-up and paired report with:
+
+```bash
+PYTHONPATH=src python scripts/run_space_suite_v2.py
+PYTHONPATH=src CUDA_VISIBLE_DEVICES='' python scripts/make_space_suite_report.py \
+  --suite configs/experiments/space_suite_v2.json \
+  --root vis/space_suite/v2 --output vis/space_suite/report_v2
+PYTHONPATH=src CUDA_VISIBLE_DEVICES='' python scripts/compare_space_policies.py \
+  --baseline-report vis/space_suite/report --baseline-root vis/space_suite/v1 \
+  --candidate-report vis/space_suite/report_v2 --candidate-root vis/space_suite/v2 \
+  --output vis/space_suite/policy_comparison
+```
+
+### Follow-up results and decision
+
+The candidate completed all four 300-image runs, still entering 13 of 16 rooms.
+The same office break room, quiet office and apartment kitchen remained
+unentered. Bounded goal persistence alone did not fix the missed-room problem,
+so **v1 remains the default**. Preserve v2 as a measured experimental candidate.
+
+Each cell below shows v1 → v2; reconstruction uses a 10 cm tolerance.
+
+| Case | Rooms entered | Edges visible | 3D precision | 3D completeness |
+| --- | ---: | ---: | ---: | ---: |
+| Branching home | 4/4 → 4/4 | 84.17% → 81.96% | 69.15% → 64.95% | 44.73% → 43.43% |
+| Loop workspaces | 4/4 → 4/4 | 84.88% → 85.45% | 79.50% → 75.42% | 43.27% → 44.73% |
+| Open office | 2/4 → 2/4 | 82.02% → 73.22% | 42.97% → 45.65% | 42.76% → 37.17% |
+| Compact apartment | 3/4 → 3/4 | 74.15% → 73.18% | 64.25% → 62.05% | 45.13% → 44.34% |
+| Equal-building macro | 3.25/4 → 3.25/4 | 81.30% → 78.45% | 63.97% → 62.02% | 43.98% → 42.42% |
+
+The loop layout gained 1.46 percentage points of completeness but lost 4.08
+points of precision. The office lost 8.80 points of visibility and 5.60 points
+of completeness. Macro completeness fell 1.56 points, with lower scores in
+three of four layouts; macro typed completeness fell from 29.74% to 29.04%.
+These results argue against adopting this candidate despite its reduced goal
+switching. Better persistence is not, by itself, better selection of informative
+viewpoints.
+
+The recorded early-goal-switch proxy fell from 33 to 13, but frames acquired at
+stations adding fewer than 500 surface voxels increased from 362 to 414. These
+are descriptive diagnostics: a necessary switch can avoid a blocked route, and
+a low-gain image can still improve confidence or edge predictions. The paired
+report defines these thresholds and shows every case separately.
+
+The office illustrates why unconditional persistence can hurt. Through station
+7, both runs have identical occupancy arrays, frontier lists, camera requests
+and depth hashes. From `(-1.35, -0.13)`, v1 selects the break-room frontier at
+`(3.55, 0.15)`, whereas v2 retains a main-office goal at `(-2.35, 1.05)`.
+At station 13, v2 retains a frontier with 5 gain cells while its local greedy
+alternative has 37 cells. Later, stations 16–18 revisit nearby positions and
+add only 189, 237 and 233 surface voxels. These observations explain concrete
+detours; they do not prove that following the alternative would enter a room.
+Room names here are assigned afterward by the evaluator.
+
+A next hypothesis is to release a commitment when its remaining information
+value becomes too small relative to other reachable frontiers and the remaining
+image budget. This has not been implemented or validated. It should be tested
+as a separate frozen candidate, retaining acquired-map-only decisions and all
+four development outcomes, before any unseen-layout evaluation.
+
+The candidate's acquisition took 19.03 minutes versus 18.94 minutes for v1,
+with the same 1,200 images and 120 stations. Its total path was 97.06 m versus
+98.48 m. This is not a demonstrated speedup: it acquired no fewer images and
+produced less complete geometry overall. No model retraining was needed for
+this planning experiment. Future efficiency work should measure reconstruction
+quality per image and per elapsed second, rather than optimizing network latency
+alone or assuming that fewer goal switches save useful observations.
+
+All four v2 CPU replays passed: 1,320 map arrays matched exactly and all 120
+stateful policy decisions were reproduced. All 45 frozen inputs and 56 receipted
+outputs matched their SHA-256 records. The source passes 181 CPU unit tests and
+Ruff; the publisher passes 13 tests. Full pipeline time, including rendering
+startup, evaluation and media generation, was 24.87 minutes versus 24.74 minutes
+for v1. The v2 apartment contact sheet still shows the frozen plant/sofa
+intersection; its separate manual review is recorded locally rather than
+inheriting the baseline's inspection claim.
